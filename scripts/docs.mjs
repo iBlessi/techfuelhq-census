@@ -4,14 +4,14 @@ import { join } from 'node:path';
 import { CENSUSES, IDS, REPO } from '../lib/censuses.js';
 import { ROOT, writeText, sameOnDisk } from './common.mjs';
 
-const SOURCE = {
+export const SOURCE = {
   human: 'you',
   machine: 'the reading',
   derived: 'worked out from the row',
   intake: 'the maintainer',
 };
 
-function allowed(f) {
+export function allowed(f) {
   if (f.type === 'enum') return f.values.map((v) => `\`${v}\``).join(', ');
   if (f.type === 'integer' || f.type === 'number') {
     const parts = [];
