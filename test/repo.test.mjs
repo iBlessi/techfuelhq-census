@@ -115,3 +115,16 @@ test('no fixture carries a drive serial number or a world wide name', () => {
     }
   }
 });
+
+test('every figure a census can publish has a label for the page', async () => {
+  const { GOOD } = await import('./helpers.mjs');
+  const { buildRow } = await import('../lib/report.js');
+  for (const def of Object.values(CENSUSES)) {
+    const made = buildRow(def, { census: def.id, v: 1, fields: GOOD[def.id] }, { submitted_date: '2026-09-29' }, '2026-09-29');
+    assert.deepEqual(made.errors, [], def.id);
+    // Six copies of a good row: enough for every conditional figure to appear.
+    const figures = def.publish.figures(Array.from({ length: 6 }, () => ({ ...made.row, panel_hours: '5000', hours_source: 'osd' })));
+    for (const key of Object.keys(figures)) assert.ok(def.publish.figureLabels[key], `${def.id}: no label for ${key}`);
+    for (const key of Object.keys(def.publish.figureLabels)) assert.ok(key in figures, `${def.id}: label for ${key}, which is never published`);
+  }
+});

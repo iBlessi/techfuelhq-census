@@ -84,6 +84,14 @@ const definition = {
 
   publish: {
     floor: 5,
+    figureLabels: {
+      n: "Rows",
+      seconds_median: "Firmware time, median (s)",
+      seconds_min: "Firmware time, shortest (s)",
+      seconds_max: "Firmware time, longest (s)",
+      board_makers: "Board makers among the rows",
+      cold_boots: "Rows read after a cold boot",
+    },
     group: (row) => `${row.platform}/${row.memory_fast_boot}`,
     label(key) {
       const [platform, state] = key.split('/');

@@ -116,6 +116,16 @@ const definition = {
 
   publish: {
     floor: 5,
+    figureLabels: {
+      n: "Counted rows",
+      imbalance_median: "Busiest pin over the average pin, median",
+      imbalance_min: "Busiest pin over the average pin, lowest row",
+      imbalance_max: "Busiest pin over the average pin, highest row",
+      max_share_pct_median: "Busiest pin's share of the total, median (%)",
+      peak_pin_a_highest: "Highest single pin reading in any row (A)",
+      rows_with_a_pin_at_or_above_9_2_a: "Rows where a pin reached 9.2 A or more",
+      rows_in_high_band: "Rows at 25 A total and above",
+    },
     group: (row) => row.cable_type,
     label: (key) => definition.fields.find((f) => f.name === 'cable_type').labels[key] || key,
     counts: (row) => row.band !== 'idle',

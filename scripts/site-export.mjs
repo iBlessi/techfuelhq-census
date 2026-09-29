@@ -77,6 +77,7 @@ for (const id of IDS) {
     about: def.about,
     counted: def.counted,
     floor: def.publish.floor,
+    figure_labels: def.publish.figureLabels,
     repo: REPO,
     commit,
     csv: `https://raw.githubusercontent.com/${REPO}/main/censuses/${id}/data/submissions.csv`,
