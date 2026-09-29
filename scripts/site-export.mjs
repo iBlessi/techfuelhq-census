@@ -57,8 +57,10 @@ for (const src of sources.sort()) {
   writeFileSync(dest, text, 'utf8');
   files[rel] = createHash('sha256').update(text, 'utf8').digest('hex');
 }
-// The same real output the repository's own tests read, for the site's browser tests.
+// The same real output the repository's own tests read, for the site's browser tests, with
+// the note that says where each file came from and under what licence.
 const FIXTURES = [
+  'README.md',
   'pin-current/astral-hwmon-burn-2hz.csv',
   'pin-current/12vhpwr-guard-flight-made-up.csv',
   'drive-arrival/exos-20tb-smartctl-a.txt',
