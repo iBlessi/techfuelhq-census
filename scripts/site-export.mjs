@@ -77,7 +77,8 @@ for (const id of IDS) {
     about: def.about,
     counted: def.counted,
     floor: def.publish.floor,
-    figure_labels: def.publish.figureLabels,
+    // An ordered list, because a template that walks a map sorts its keys.
+    figures: Object.entries(def.publish.figureLabels).map(([key, label]) => ({ key, label })),
     repo: REPO,
     commit,
     csv: `https://raw.githubusercontent.com/${REPO}/main/censuses/${id}/data/submissions.csv`,
