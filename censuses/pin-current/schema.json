@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/iBlessi/techfuelhq-census/main/censuses/pin-current/schema.json",
+  "title": "TechFuelHQ 12V-2x6 Pin Current Census",
+  "description": "One row is one connector on one card, read once under one load. In the CSV every value is text and an empty cell means the field was left out. Dataset version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "card_brand": {
+      "title": "Card brand",
+      "description": "As printed on the box: ASUS, MSI, Gigabyte.",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "human"
+    },
+    "card_model": {
+      "title": "Card model",
+      "description": "The model line: ROG Astral RTX 5080 OC.",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "human"
+    },
+    "gpu": {
+      "title": "GPU",
+      "description": "The chip, written like RTX 5080 or RX 9070 XT.",
+      "type": "string",
+      "maxLength": 24,
+      "pattern": "^(RTX|RX|Arc) [0-9A-Za-z ]{3,18}$",
+      "x-source": "human"
+    },
+    "sensor": {
+      "title": "What measured it",
+      "type": "string",
+      "enum": [
+        "asus-power-detector",
+        "astral-hwmon",
+        "12vhpwr-guard",
+        "hwinfo",
+        "wireview-pro-ii",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "capture": {
+      "title": "Capture",
+      "type": "string",
+      "enum": [
+        "log",
+        "single-reading"
+      ],
+      "x-source": "machine"
+    },
+    "cable_type": {
+      "title": "Cable",
+      "description": "What carries power from the supply to the card.",
+      "type": "string",
+      "enum": [
+        "native-16pin",
+        "native-8pin-psu-side",
+        "boxed-adapter",
+        "third-party"
+      ],
+      "x-source": "human"
+    },
+    "inline_part": {
+      "title": "Anything between cable and card",
+      "type": "string",
+      "enum": [
+        "none",
+        "angled-adapter",
+        "extension",
+        "inline-meter"
+      ],
+      "x-source": "human"
+    },
+    "psu_brand": {
+      "title": "Power supply brand",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "human"
+    },
+    "psu_model": {
+      "title": "Power supply model",
+      "description": "With its wattage if that is part of the name: RM1000x.",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "human"
+    },
+    "psu_watts": {
+      "title": "Power supply watts",
+      "type": "integer",
+      "minimum": 300,
+      "maximum": 3000,
+      "x-source": "human"
+    },
+    "months_in_use": {
+      "title": "Months this cable has been in this card",
+      "description": "Whole months since it was last plugged in. A cable reseated last week is 0.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 120,
+      "x-source": "human"
+    },
+    "load_kind": {
+      "title": "What the card was doing",
+      "type": "string",
+      "enum": [
+        "gaming",
+        "stress-test",
+        "compute",
+        "desktop"
+      ],
+      "x-source": "human"
+    },
+    "load_name": {
+      "title": "Which one",
+      "description": "The game or test by name.",
+      "type": "string",
+      "maxLength": 60,
+      "x-source": "human"
+    },
+    "samples": {
+      "title": "Samples counted",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000000,
+      "x-source": "machine"
+    },
+    "duration_s": {
+      "title": "Seconds covered",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 864000,
+      "x-source": "machine"
+    },
+    "total_a": {
+      "title": "Total current, mean (A)",
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 80,
+      "x-source": "machine"
+    },
+    "pin1_a": {
+      "title": "Pin 1, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "pin2_a": {
+      "title": "Pin 2, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "pin3_a": {
+      "title": "Pin 3, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "pin4_a": {
+      "title": "Pin 4, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "pin5_a": {
+      "title": "Pin 5, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "pin6_a": {
+      "title": "Pin 6, mean (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "peak_pin_a": {
+      "title": "Highest single pin seen (A)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "x-source": "machine"
+    },
+    "peak_total_a": {
+      "title": "Highest total seen (A)",
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 80,
+      "x-source": "machine"
+    },
+    "min_v": {
+      "title": "Lowest pin voltage seen (V)",
+      "type": "number",
+      "minimum": 9,
+      "maximum": 14,
+      "x-source": "machine"
+    },
+    "imbalance": {
+      "title": "Busiest pin over the average pin",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 6,
+      "x-source": "derived"
+    },
+    "max_share_pct": {
+      "title": "Busiest pin's share of the total (%)",
+      "type": "number",
+      "minimum": 16.6,
+      "maximum": 100,
+      "x-source": "derived"
+    },
+    "band": {
+      "title": "Load band",
+      "type": "string",
+      "enum": [
+        "idle",
+        "moderate",
+        "high"
+      ],
+      "x-source": "derived"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string",
+      "maxLength": 280,
+      "x-source": "human"
+    },
+    "submitted_date": {
+      "title": "The day the report was sent",
+      "type": "string",
+      "format": "date",
+      "x-source": "intake"
+    },
+    "source_issue": {
+      "title": "The issue the row came from",
+      "type": "integer",
+      "minimum": 1,
+      "x-source": "intake"
+    }
+  },
+  "required": [
+    "card_brand",
+    "card_model",
+    "gpu",
+    "sensor",
+    "capture",
+    "cable_type",
+    "inline_part",
+    "psu_brand",
+    "psu_model",
+    "months_in_use",
+    "load_kind",
+    "samples",
+    "duration_s",
+    "total_a",
+    "pin1_a",
+    "pin2_a",
+    "pin3_a",
+    "pin4_a",
+    "pin5_a",
+    "pin6_a",
+    "peak_pin_a",
+    "peak_total_a",
+    "imbalance",
+    "max_share_pct",
+    "band",
+    "submitted_date"
+  ]
+}

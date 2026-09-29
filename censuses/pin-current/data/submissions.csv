@@ -1,0 +1,1 @@
+card_brand,card_model,gpu,sensor,capture,cable_type,inline_part,psu_brand,psu_model,psu_watts,months_in_use,load_kind,load_name,samples,duration_s,total_a,pin1_a,pin2_a,pin3_a,pin4_a,pin5_a,pin6_a,peak_pin_a,peak_total_a,min_v,imbalance,max_share_pct,band,notes,submitted_date,source_issue

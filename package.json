@@ -1,0 +1,17 @@
+{
+  "name": "techfuelhq-census",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Open community censuses of PC hardware behaviour, published by TechFuelHQ. Data CC BY 4.0, code MIT.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "validate": "node scripts/validate.mjs",
+    "summary": "node scripts/summary.mjs",
+    "schemas": "node scripts/schemas.mjs"
+  }
+}

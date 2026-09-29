@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/iBlessi/techfuelhq-census/main/censuses/windows-memory/schema.json",
+  "title": "TechFuelHQ Windows Idle Memory Census",
+  "description": "One row is one machine, read once. In the CSV every value is text and an empty cell means the field was left out. Dataset version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "installed_gb": {
+      "title": "Memory installed (GB)",
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 2048,
+      "x-source": "machine"
+    },
+    "visible_mb": {
+      "title": "Memory Windows can use (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "in_use_mb": {
+      "title": "In use (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "derived"
+    },
+    "available_mb": {
+      "title": "Available (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "committed_mb": {
+      "title": "Committed (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "commit_limit_mb": {
+      "title": "Commit limit (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "cached_mb": {
+      "title": "Cached (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "derived"
+    },
+    "standby_mb": {
+      "title": "Standby (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "modified_mb": {
+      "title": "Modified (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "free_mb": {
+      "title": "Free (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "paged_pool_mb": {
+      "title": "Paged pool (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "nonpaged_pool_mb": {
+      "title": "Non-paged pool (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
+    "processes": {
+      "title": "Processes running",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000,
+      "x-source": "machine"
+    },
+    "startup_items": {
+      "title": "Startup entries",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000,
+      "x-source": "machine"
+    },
+    "uptime_min": {
+      "title": "Minutes since boot",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5256000,
+      "x-source": "machine"
+    },
+    "os_caption": {
+      "title": "Windows edition",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "machine"
+    },
+    "os_build": {
+      "title": "Windows build",
+      "type": "string",
+      "maxLength": 20,
+      "pattern": "^[0-9]{4,6}$",
+      "x-source": "machine"
+    },
+    "state": {
+      "title": "What the machine was doing",
+      "type": "string",
+      "enum": [
+        "fresh-boot-idle",
+        "in-use"
+      ],
+      "x-source": "human"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string",
+      "maxLength": 280,
+      "x-source": "human"
+    },
+    "submitted_date": {
+      "title": "The day the report was sent",
+      "type": "string",
+      "format": "date",
+      "x-source": "intake"
+    },
+    "source_issue": {
+      "title": "The issue the row came from",
+      "type": "integer",
+      "minimum": 1,
+      "x-source": "intake"
+    }
+  },
+  "required": [
+    "installed_gb",
+    "visible_mb",
+    "in_use_mb",
+    "available_mb",
+    "committed_mb",
+    "commit_limit_mb",
+    "cached_mb",
+    "standby_mb",
+    "modified_mb",
+    "free_mb",
+    "paged_pool_mb",
+    "nonpaged_pool_mb",
+    "processes",
+    "uptime_min",
+    "os_caption",
+    "os_build",
+    "state",
+    "submitted_date"
+  ]
+}

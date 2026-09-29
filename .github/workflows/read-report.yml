@@ -1,0 +1,34 @@
+name: read-report
+
+# Reads a report when its issue is opened or edited, and answers on the issue with the row it
+# makes or with what has to be fixed. The issue's text is read from the event file as data; no
+# step places it in a command line.
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: read-report-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  read:
+    if: contains(github.event.issue.labels.*.name, 'report') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the report
+        run: node scripts/intake.mjs "$GITHUB_EVENT_PATH" comment.md > result.json
+      - name: Answer on the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node scripts/respond.mjs result.json comment.md
