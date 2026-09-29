@@ -45,8 +45,8 @@ from `src/farmprint.cpp` and `src/ataprint.cpp` in
 
 | File | Source | Changed |
 |---|---|---|
-| `post-time/windows-7800x3d-b650.json` | The POST time command, run on 2026-09-29 on my own machine: Ryzen 7 7800X3D, ROG STRIX B650-A GAMING WIFI, BIOS 3881, Windows 11 build 26200. | Nothing |
-| `windows-memory/windows-32gb-in-use.json` | The Windows memory command, run on the same machine the same day, 507 minutes after boot and in use. | Nothing |
+| `post-time/windows-7800x3d-b650.json` | The POST time command, run on 2026-09-29 on a desktop with a Ryzen 7 7800X3D, a ROG STRIX B650-A GAMING WIFI on BIOS 3881, and Windows 11 build 26200. | Nothing |
+| `windows-memory/windows-32gb-in-use.json` | The Windows memory command, run on the same desktop the same day, 527 minutes after boot and in use. | Nothing |
 
 The layout of the `systemd-analyze` line was read from `src/analyze/analyze-time-data.c` in
 [systemd/systemd](https://github.com/systemd/systemd). The two lines without a firmware time are
