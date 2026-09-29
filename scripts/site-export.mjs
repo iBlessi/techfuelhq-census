@@ -2,6 +2,7 @@
 //   assets/js/census/vendor/   the library and the five definitions, byte for byte
 //   assets/js/census/vendor/VENDOR.json   the commit they came from and a hash of each file
 //   data/census/<id>.json      the fields, commands and summary each page prints
+//   tests/census/fixtures/     the real output the site's browser tests paste in
 //
 //   node scripts/site-export.mjs <path to the site checkout>
 //
@@ -56,6 +57,26 @@ for (const src of sources.sort()) {
   writeFileSync(dest, text, 'utf8');
   files[rel] = createHash('sha256').update(text, 'utf8').digest('hex');
 }
+// The same real output the repository's own tests read, for the site's browser tests.
+const FIXTURES = [
+  'pin-current/astral-hwmon-burn-2hz.csv',
+  'pin-current/12vhpwr-guard-flight-made-up.csv',
+  'drive-arrival/exos-20tb-smartctl-a.txt',
+  'drive-arrival/exos-20tb-farm.txt',
+  'drive-arrival/wd-14tb-smartctl-a.json',
+  'post-time/windows-7800x3d-b650.json',
+  'windows-memory/windows-32gb-in-use.json',
+];
+const fixtureDir = join(site, 'tests', 'census', 'fixtures');
+rmSync(fixtureDir, { recursive: true, force: true });
+for (const rel of FIXTURES) {
+  const text = readFileSync(join(ROOT, 'test', 'fixtures', rel), 'utf8').replace(/\r\n/g, '\n');
+  const dest = join(fixtureDir, rel);
+  mkdirSync(dirname(dest), { recursive: true });
+  writeFileSync(dest, text, 'utf8');
+  files[`test/fixtures/${rel}`] = createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
 writeFileSync(
   join(vendor, 'VENDOR.json'),
   `${JSON.stringify({ repo: REPO, commit, dirty: Boolean(dirty), files }, null, 2)}\n`,
@@ -103,4 +124,4 @@ for (const id of IDS) {
   writeFileSync(join(dataDir, `${id}.json`), `${JSON.stringify(out, null, 2)}\n`, 'utf8');
 }
 
-console.log(`exported ${Object.keys(files).length} library files and ${IDS.length} data files from ${commit.slice(0, 8)}`);
+console.log(`exported ${Object.keys(files).length} files and ${IDS.length} data files from ${commit.slice(0, 8)}`);
