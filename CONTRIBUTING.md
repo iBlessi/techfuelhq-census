@@ -13,7 +13,7 @@ current evenly: these are the half of each distribution that never gets posted a
 ## Before it joins a dataset
 
 The workflow checks that a report is complete and that its numbers agree with each other. After
-that I read it. I hold a report back and ask a question on its issue when I see:
+that a maintainer reads it. A report is held back, with a question on its issue, when it shows:
 
 - several new accounts reporting the same thing in the same hour;
 - a second report of a unit that is already in the data;

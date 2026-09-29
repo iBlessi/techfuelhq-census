@@ -32,7 +32,7 @@ fields, and the issue forms take the same object:
 
 1. When the issue is opened or edited, a workflow reads the report and answers on the issue with
    the row it makes, or with each thing that has to be fixed.
-2. I read every report before it joins a dataset. What I look for is in
+2. A maintainer reads every report before it joins a dataset. What that read looks for is in
    [CONTRIBUTING.md](CONTRIBUTING.md).
 3. Accepted reports are added with `scripts/accept.mjs`, which refuses any row the validator
    would refuse and any issue already in the data. Each row names its issue in `source_issue`.
