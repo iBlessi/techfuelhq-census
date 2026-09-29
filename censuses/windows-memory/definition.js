@@ -99,6 +99,14 @@ const definition = {
 
   publish: {
     floor: 5,
+    figureLabels: {
+      n: "Counted rows",
+      in_use_mb_median: "In use, median (MB)",
+      in_use_mb_min: "In use, lowest row (MB)",
+      in_use_mb_max: "In use, highest row (MB)",
+      committed_mb_median: "Committed, median (MB)",
+      processes_median: "Processes running, median",
+    },
     group: (row) => bucketOf(row.installed_gb),
     label: (key) => BUCKET_LABELS[key] || key,
     counts: (row) => row.state === 'fresh-boot-idle',

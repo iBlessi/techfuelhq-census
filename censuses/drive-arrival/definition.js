@@ -100,6 +100,15 @@ const definition = {
 
   publish: {
     floor: 5,
+    figureLabels: {
+      n: "Rows",
+      smart_hours_median: "SMART power-on hours, median",
+      rows_with_farm: "Rows with a FARM log",
+      rows_not_working: "Rows that arrived dead or failed their first test",
+      rows_with_reallocated_sectors: "Rows with reallocated sectors",
+      farm_hours_median: "FARM power-on hours, median",
+      rows_where_farm_exceeds_smart_by_over_24_h: "Rows where FARM is more than 24 hours above SMART",
+    },
     group: (row) => `${sellerKey(row.seller)}/${row.listing_condition}`,
     label(key, rows = []) {
       const [seller, condition] = key.split('/');

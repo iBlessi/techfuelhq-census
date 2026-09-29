@@ -82,6 +82,19 @@ const definition = {
 
   publish: {
     floor: 5,
+    figureLabels: {
+      n: "Counted rows",
+      severity_0: "Severity 0",
+      severity_1: "Severity 1",
+      severity_2: "Severity 2",
+      severity_3: "Severity 3",
+      severity_4: "Severity 4",
+      months_in_use_median: "Months in use, median",
+      rows_with_menu_hours: "Rows with hours from the monitor's menu",
+      menu_hours_median: "Hours from the monitor's menu, median",
+      claims_approved: "Warranty claims approved",
+      claims_denied: "Warranty claims denied",
+    },
     group: (row) => row.panel_type,
     label: (key) => definition.fields.find((f) => f.name === 'panel_type').labels[key] || key,
     counts: (row) => Number(row.months_in_use) >= 1,
