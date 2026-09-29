@@ -55,6 +55,13 @@
       "maximum": 4194304,
       "x-source": "derived"
     },
+    "cache_mb": {
+      "title": "System cache (MB)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4194304,
+      "x-source": "machine"
+    },
     "standby_mb": {
       "title": "Standby (MB)",
       "type": "integer",
@@ -160,6 +167,7 @@
     "committed_mb",
     "commit_limit_mb",
     "cached_mb",
+    "cache_mb",
     "standby_mb",
     "modified_mb",
     "free_mb",

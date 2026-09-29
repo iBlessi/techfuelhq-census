@@ -25,6 +25,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 | `committed_mb` | yes | the reading | 0 to 4194304, whole number | Committed (MB) |
 | `commit_limit_mb` | yes | the reading | 0 to 4194304, whole number | Commit limit (MB) |
 | `cached_mb` | yes | worked out from the row | 0 to 4194304, whole number | Cached (MB) |
+| `cache_mb` | yes | the reading | 0 to 4194304, whole number | System cache (MB) |
 | `standby_mb` | yes | the reading | 0 to 4194304, whole number | Standby (MB) |
 | `modified_mb` | yes | the reading | 0 to 4194304, whole number | Modified (MB) |
 | `free_mb` | yes | the reading | 0 to 4194304, whole number | Free (MB) |

@@ -1,1 +1,1 @@
-installed_gb,visible_mb,in_use_mb,available_mb,committed_mb,commit_limit_mb,cached_mb,standby_mb,modified_mb,free_mb,paged_pool_mb,nonpaged_pool_mb,processes,startup_items,uptime_min,os_caption,os_build,state,notes,submitted_date,source_issue
+installed_gb,visible_mb,in_use_mb,available_mb,committed_mb,commit_limit_mb,cached_mb,cache_mb,standby_mb,modified_mb,free_mb,paged_pool_mb,nonpaged_pool_mb,processes,startup_items,uptime_min,os_caption,os_build,state,notes,submitted_date,source_issue

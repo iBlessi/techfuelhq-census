@@ -11,20 +11,21 @@ test('the command\'s real output from a 32 GB machine that had been up for hours
   const r = readWindows(RIG);
   assert.equal(r.machine.installed_gb, '32');
   assert.equal(r.machine.visible_mb, '32424');
-  assert.equal(r.machine.available_mb, '16983');
-  assert.equal(r.machine.modified_mb, '42');
-  // In use as Task Manager counts it: 32424 - 16983 - 42.
-  assert.equal(r.machine.in_use_mb, '15399');
-  // Cached is standby plus modified: 15977 + 42.
-  assert.equal(r.machine.cached_mb, '16019');
-  assert.equal(r.machine.uptime_min, '507');
+  assert.equal(r.machine.available_mb, '17009');
+  assert.equal(r.machine.modified_mb, '68');
+  assert.equal(r.machine.cache_mb, '430');
+  // In use as Task Manager draws it, total minus available: 32424 - 17009.
+  assert.equal(r.machine.in_use_mb, '15415');
+  // Cached is the system cache, the modified list and the standby lists: 430 + 68 + 15738.
+  assert.equal(r.machine.cached_mb, '16236');
+  assert.equal(r.machine.uptime_min, '527');
   assert.equal(r.suggested.state, 'in-use');
 });
 
 test('a machine read 12 minutes after boot is offered as idle', () => {
-  assert.equal(readWindows(RIG.replace('"uptime_min":507', '"uptime_min":12')).suggested.state, 'fresh-boot-idle');
-  assert.equal(readWindows(RIG.replace('"uptime_min":507', '"uptime_min":4')).suggested.state, 'in-use');
-  assert.equal(readWindows(RIG.replace('"uptime_min":507', '"uptime_min":61')).suggested.state, 'in-use');
+  assert.equal(readWindows(RIG.replace('"uptime_min":527', '"uptime_min":12')).suggested.state, 'fresh-boot-idle');
+  assert.equal(readWindows(RIG.replace('"uptime_min":527', '"uptime_min":4')).suggested.state, 'in-use');
+  assert.equal(readWindows(RIG.replace('"uptime_min":527', '"uptime_min":61')).suggested.state, 'in-use');
 });
 
 test('a virtual machine with no memory modules is refused with the reason', () => {
@@ -39,9 +40,9 @@ test('a report made from the real output builds a valid row, and only as in-use'
   const { machine } = readWindows(RIG);
   const asUse = buildRow(def, makeReport(def, { ...machine, state: 'in-use' }), { submitted_date: TODAY }, TODAY);
   assert.deepEqual(asUse.errors, []);
-  assert.equal(asUse.row.in_use_mb, '15399');
+  assert.equal(asUse.row.in_use_mb, '15415');
   const asIdle = buildRow(def, makeReport(def, { ...machine, state: 'fresh-boot-idle' }), { submitted_date: TODAY }, TODAY);
-  assert.ok(asIdle.errors.some((e) => /needs uptime_min from 5 to 60, and this row has 507/.test(e)));
+  assert.ok(asIdle.errors.some((e) => /needs uptime_min from 5 to 60, and this row has 527/.test(e)));
 });
 
 test('planted faults in a report are each caught', () => {
@@ -51,10 +52,10 @@ test('planted faults in a report are each caught', () => {
   };
   const ok = buildRow(def, report('windows-memory'), { submitted_date: TODAY }, TODAY);
   assert.deepEqual(ok.errors, []);
-  assert.equal(ok.row.in_use_mb, '8324'); // 32424 - 24000 - 100
-  assert.equal(ok.row.cached_mb, '9100');
-  caught({ in_use_mb: '5000' }, /the report says 5000 and its values give 8324/);
-  caught({ available_mb: '40000' }, /in_use_mb: -7676 is below 0/);
+  assert.equal(ok.row.in_use_mb, '8424'); // 32424 - 24000
+  assert.equal(ok.row.cached_mb, '9400'); // 300 + 100 + 9000
+  caught({ in_use_mb: '5000' }, /the report says 5000 and its values give 8424/);
+  caught({ available_mb: '40000' }, /in_use_mb: -7576 is below 0/);
   caught({ standby_mb: '2000' }, /standby and free do not add to available/);
   caught({ visible_mb: '40000', available_mb: '31576' }, /more than the memory installed/);
   caught({ uptime_min: '90' }, /needs uptime_min from 5 to 60/);

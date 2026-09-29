@@ -69,8 +69,8 @@ npm run validate
 
 `npm test` plants faults and proves each check catches them. The readers are tested against
 real output: a published capture from a ROG Astral card, smartctl output from Seagate, Western
-Digital, SAS, solid state and NVMe drives, and the two Windows commands as they ran on my own
-machine. Where that output comes from is in [test/fixtures/README.md](test/fixtures/README.md).
+Digital, SAS, solid state and NVMe drives, and what the two Windows commands printed on a
+Ryzen 7 7800X3D desktop. Where that output comes from is in [test/fixtures/README.md](test/fixtures/README.md).
 
 ## The two commands
 

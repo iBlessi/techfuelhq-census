@@ -39,7 +39,7 @@ export const GOOD = {
   },
   'windows-memory': {
     installed_gb: '32', visible_mb: '32424', available_mb: '24000', committed_mb: '9000',
-    commit_limit_mb: '47784', standby_mb: '9000', modified_mb: '100', free_mb: '15000',
+    commit_limit_mb: '47784', cache_mb: '300', standby_mb: '9000', modified_mb: '100', free_mb: '15000',
     paged_pool_mb: '600', nonpaged_pool_mb: '500', processes: '180', startup_items: '5',
     uptime_min: '12', os_caption: 'Microsoft Windows 11 Home', os_build: '26200', state: 'fresh-boot-idle',
   },

@@ -4,7 +4,7 @@ import { median, range } from '../../lib/stats.js';
 
 // Printed by Windows PowerShell 5.1 and later. Reads WMI; writes nothing; carries no serial
 // number, host name, user name or process name.
-export const WINDOWS_COMMAND = "$o=Get-CimInstance Win32_OperatingSystem;$m=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory;$d=@(Get-CimInstance Win32_PhysicalMemory);$s=$m.StandbyCacheNormalPriorityBytes+$m.StandbyCacheReserveBytes+$m.StandbyCacheCoreBytes;[ordered]@{census='windows-memory';v=1;installed_gb=[int](($d|Measure-Object Capacity -Sum).Sum/1GB);visible_mb=[int]($o.TotalVisibleMemorySize/1KB);available_mb=[int]($m.AvailableBytes/1MB);committed_mb=[int]($m.CommittedBytes/1MB);commit_limit_mb=[int]($m.CommitLimit/1MB);standby_mb=[int]($s/1MB);modified_mb=[int]($m.ModifiedPageListBytes/1MB);free_mb=[int]($m.FreeAndZeroPageListBytes/1MB);paged_pool_mb=[int]($m.PoolPagedBytes/1MB);nonpaged_pool_mb=[int]($m.PoolNonpagedBytes/1MB);processes=@(Get-Process).Count;startup_items=@(Get-CimInstance Win32_StartupCommand).Count;uptime_min=[int]((Get-Date)-$o.LastBootUpTime).TotalMinutes;os_caption=$o.Caption;os_build=$o.BuildNumber}|ConvertTo-Json -Compress";
+export const WINDOWS_COMMAND = "$o=Get-CimInstance Win32_OperatingSystem;$m=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory;$d=@(Get-CimInstance Win32_PhysicalMemory);$s=$m.StandbyCacheNormalPriorityBytes+$m.StandbyCacheReserveBytes+$m.StandbyCacheCoreBytes;[ordered]@{census='windows-memory';v=1;installed_gb=[int](($d|Measure-Object Capacity -Sum).Sum/1GB);visible_mb=[int]($o.TotalVisibleMemorySize/1KB);available_mb=[int]($m.AvailableBytes/1MB);committed_mb=[int]($m.CommittedBytes/1MB);commit_limit_mb=[int]($m.CommitLimit/1MB);cache_mb=[int]($m.CacheBytes/1MB);standby_mb=[int]($s/1MB);modified_mb=[int]($m.ModifiedPageListBytes/1MB);free_mb=[int]($m.FreeAndZeroPageListBytes/1MB);paged_pool_mb=[int]($m.PoolPagedBytes/1MB);nonpaged_pool_mb=[int]($m.PoolNonpagedBytes/1MB);processes=@(Get-Process).Count;startup_items=@(Get-CimInstance Win32_StartupCommand).Count;uptime_min=[int]((Get-Date)-$o.LastBootUpTime).TotalMinutes;os_caption=$o.Caption;os_build=$o.BuildNumber}|ConvertTo-Json -Compress";
 
 export const IDLE_UPTIME_MIN = 5;
 export const IDLE_UPTIME_MAX = 60;
@@ -26,12 +26,15 @@ const BUCKET_LABELS = {
   'over-64': 'More than 64 GB installed',
 };
 
-// In use as Task Manager counts it: everything that is not available and not on the modified list.
+// Both follow Microsoft's table of counters against Task Manager ("Memory Performance
+// Information", learn.microsoft.com/windows/win32/memory/memory-performance-information):
+// the usage Task Manager draws is total minus available, and its Cached figure is the system
+// cache plus the modified list plus the three standby lists.
 export function derive(row) {
   return {
     ...row,
-    in_use_mb: String(Number(row.visible_mb) - Number(row.available_mb) - Number(row.modified_mb)),
-    cached_mb: String(Number(row.standby_mb) + Number(row.modified_mb)),
+    in_use_mb: String(Number(row.visible_mb) - Number(row.available_mb)),
+    cached_mb: String(Number(row.cache_mb) + Number(row.modified_mb) + Number(row.standby_mb)),
   };
 }
 
@@ -54,6 +57,7 @@ const definition = {
     mb('committed_mb', 'Committed (MB)'),
     mb('commit_limit_mb', 'Commit limit (MB)'),
     { ...mb('cached_mb', 'Cached (MB)'), from: 'derived' },
+    mb('cache_mb', 'System cache (MB)'),
     mb('standby_mb', 'Standby (MB)'),
     mb('modified_mb', 'Modified (MB)'),
     mb('free_mb', 'Free (MB)'),
@@ -84,8 +88,8 @@ const definition = {
     const d = derive(row);
     if (d.in_use_mb !== row.in_use_mb) errors.push(`in_use_mb is ${row.in_use_mb} and the counters give ${d.in_use_mb}`);
     if (d.cached_mb !== row.cached_mb) errors.push(`cached_mb is ${row.cached_mb} and the counters give ${d.cached_mb}`);
-    // Available plus modified above what the machine has gives a negative in_use_mb, which the
-    // field's own floor of 0 refuses before this check runs.
+    // Available above what the machine has gives a negative in_use_mb, which the field's own
+    // floor of 0 refuses before this check runs.
     if (!near(Number(row.standby_mb) + Number(row.free_mb), row.available_mb, 64)) {
       errors.push('standby and free do not add to available, within 64 MB');
     }
