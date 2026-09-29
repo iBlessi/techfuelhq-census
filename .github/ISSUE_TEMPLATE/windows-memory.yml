@@ -1,0 +1,28 @@
+name: Windows idle memory report
+description: "One machine, read once after a restart."
+title: "[windows-memory] "
+labels: ["report", "census:windows-memory"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Build the report on the census page: https://techfuelhq.com/data/windows-memory-census/
+
+        It reads the output of one command and writes the block below. Nothing has to be written by hand.
+  - type: textarea
+    id: report
+    attributes:
+      label: Report
+      description: The block the census page wrote. Paste it as it is.
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before you send
+      options:
+        - label: This is my own hardware, and I took this reading myself.
+          required: true
+        - label: I release this report under CC BY 4.0.
+          required: true

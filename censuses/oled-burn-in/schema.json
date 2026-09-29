@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/iBlessi/techfuelhq-census/main/censuses/oled-burn-in/schema.json",
+  "title": "TechFuelHQ OLED Monitor Burn-In Census",
+  "description": "One row is one monitor, judged once. In the CSV every value is text and an empty cell means the field was left out. Dataset version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "monitor_brand": {
+      "title": "Monitor brand",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "human"
+    },
+    "monitor_model": {
+      "title": "Monitor model",
+      "description": "The model number on the back label: AW3423DWF, FO48U, PG32UCDM.",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "human"
+    },
+    "panel_type": {
+      "title": "Panel",
+      "type": "string",
+      "enum": [
+        "qd-oled",
+        "woled",
+        "other-oled"
+      ],
+      "x-source": "human"
+    },
+    "size_in": {
+      "title": "Size (inches)",
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 100,
+      "x-source": "human"
+    },
+    "purchase_month": {
+      "title": "Bought",
+      "description": "Year and month, written 2024-03.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$",
+      "x-source": "human"
+    },
+    "months_in_use": {
+      "title": "Months in regular use",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 180,
+      "x-source": "human"
+    },
+    "panel_hours": {
+      "title": "Panel hours",
+      "description": "From the monitor's own menu if it shows them. Leave empty if it does not and you would be guessing.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000,
+      "x-source": "human"
+    },
+    "hours_source": {
+      "title": "Where the hours come from",
+      "type": "string",
+      "enum": [
+        "osd",
+        "estimate"
+      ],
+      "x-source": "human"
+    },
+    "use_mix": {
+      "title": "What is on it most of the time",
+      "type": "string",
+      "enum": [
+        "mostly-static",
+        "mixed",
+        "mostly-moving"
+      ],
+      "x-source": "human"
+    },
+    "brightness": {
+      "title": "Brightness",
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "x-source": "human"
+    },
+    "care_cycles": {
+      "title": "Panel care cycles",
+      "type": "string",
+      "enum": [
+        "as-prompted",
+        "often-postponed",
+        "disabled",
+        "unknown"
+      ],
+      "x-source": "human"
+    },
+    "static_mitigation": {
+      "title": "Habits",
+      "type": "string",
+      "enum": [
+        "none",
+        "taskbar-hidden",
+        "dark-theme",
+        "both"
+      ],
+      "x-source": "human"
+    },
+    "severity": {
+      "title": "What you see",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "x-anchors": {
+        "0": "Nothing visible on a full-screen gray slide",
+        "1": "Visible on a test slide, never in normal content",
+        "2": "Visible in normal content when I look for it",
+        "3": "Visible in normal use without looking",
+        "4": "Replaced, returned or retired because of it"
+      },
+      "x-source": "human"
+    },
+    "location": {
+      "title": "Where",
+      "type": "string",
+      "enum": [
+        "none",
+        "taskbar",
+        "static-ui",
+        "centre",
+        "whole-panel-tint",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "warranty_claim": {
+      "title": "Warranty claim for burn-in",
+      "type": "string",
+      "enum": [
+        "none",
+        "approved",
+        "denied",
+        "pending"
+      ],
+      "x-source": "human"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string",
+      "maxLength": 280,
+      "x-source": "human"
+    },
+    "submitted_date": {
+      "title": "The day the report was sent",
+      "type": "string",
+      "format": "date",
+      "x-source": "intake"
+    },
+    "source_issue": {
+      "title": "The issue the row came from",
+      "type": "integer",
+      "minimum": 1,
+      "x-source": "intake"
+    }
+  },
+  "required": [
+    "monitor_brand",
+    "monitor_model",
+    "panel_type",
+    "purchase_month",
+    "months_in_use",
+    "use_mix",
+    "care_cycles",
+    "severity",
+    "location",
+    "warranty_claim",
+    "submitted_date"
+  ]
+}

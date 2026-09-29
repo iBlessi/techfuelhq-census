@@ -1,0 +1,390 @@
+smartctl 7.4 2023-08-01 r5530 [x86_64-linux-4.4.302+] (local build)
+Copyright (C) 2002-23, Bruce Allen, Christian Franke, www.smartmontools.org
+
+Seagate Field Access Reliability Metrics log (FARM) (GP Log 0xa6)
+        FARM Log Page 0: Log Header
+                FARM Log Version: 4.29
+                Pages Supported: 6
+                Log Size: 98304
+                Page Size: 16384
+                Heads Supported: 24
+                Number of Copies: 0
+                Reason for Frame Capture: 0
+        FARM Log Page 1: Drive Information
+                Serial Number: [removed]
+                World Wide Name: [removed]
+                Device Interface: SATA
+                Device Capacity in Sectors: 39063650304
+                Physical Sector Size: 4096
+                Logical Sector Size: 512
+                Device Buffer Size: 268435456
+                Number of Heads: 20
+                Device Form Factor: 3.5 inches
+                Rotation Rate: 7200 rpm
+                Firmware Rev: SN06
+                ATA Security State (ID Word 128): 0x01621
+                ATA Features Supported (ID Word 78): 0x016cc
+                ATA Features Enabled (ID Word 79): 0x0000000000000044
+                Power on Hours: 940
+                Spindle Power on Hours: 940
+                Head Flight Hours: 198
+                Head Load Events: 1007
+                Power Cycle Count: 5
+                Hardware Reset Count: 10
+                Spin-up Time: 0 ms
+                Time to ready of the last power cycle: 21074 ms
+                Time drive is held in staggered spin: 15650 ms
+                Model Number: ST20000NM007D-3DJ103
+                Drive Recording Type: CMR
+                Max Number of Available Sectors for Reassignment: 18204
+                Assembly Date (YYWW): 2264
+                Depopulation Head Mask: 0
+        FARM Log Page 2: Workload Statistics
+                Total Number of Read Commands: 35137283
+                Total Number of Write Commands: 11729153
+                Total Number of Random Read Commands: 490653
+                Total Number of Random Write Commands: 11149104
+                Total Number Of Other Commands: 932449
+                Logical Sectors Written: 12592402449
+                Logical Sectors Read: 39112695258
+                Number of dither events during current power cycle: 6591
+                Number of times dither was held off during random workloads: 1112
+                Number of times dither was held off during sequential workloads: 1010972
+                Number of Read commands from 0-3.125% of LBA space for last 3 SMART Summary Frames: 495
+                Number of Read commands from 3.125-25% of LBA space for last 3 SMART Summary Frames: 87523
+                Number of Read commands from 25-75% of LBA space for last 3 SMART Summary Frames: 26853
+                Number of Read commands from 75-100% of LBA space for last 3 SMART Summary Frames: 35
+                Number of Write commands from 0-3.125% of LBA space for last 3 SMART Summary Frames: 931
+                Number of Write commands from 3.125-25% of LBA space for last 3 SMART Summary Frames: 0
+                Number of Write commands from 25-75% of LBA space for last 3 SMART Summary Frames: 16371
+                Number of Write commands from 75-100% of LBA space for last 3 SMART Summary Frames: 0
+        FARM Log Page 3: Error Statistics
+                Unrecoverable Read Errors: 0
+                Unrecoverable Write Errors: 0
+                Number of Reallocated Sectors: 0
+                Number of Read Recovery Attempts: 0
+                Number of Mechanical Start Failures: 0
+                Number of Reallocated Candidate Sectors: 0
+                Number of ASR Events: 8
+                Number of Interface CRC Errors: 0
+                Spin Retry Count: 0
+                Spin Retry Count Normalized: 100
+                Spin Retry Count Worst: 100
+                Number of IOEDC Errors (Raw): 0
+                CTO Count Total: 0
+                CTO Count Over 5s: 0
+                CTO Count Over 7.5s: 0
+                Total Flash LED (Assert) Events: 0
+                Index of the last Flash LED: 0
+                Flash LED Event 0:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 0 (hours): 0
+                        Power Cycle Event 0: 0
+                Flash LED Event 1:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 1 (hours): 0
+                        Power Cycle Event 1: 0
+                Flash LED Event 2:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 2 (hours): 0
+                        Power Cycle Event 2: 0
+                Flash LED Event 3:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 3 (hours): 0
+                        Power Cycle Event 3: 0
+                Flash LED Event 4:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 4 (hours): 0
+                        Power Cycle Event 4: 0
+                Flash LED Event 5:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 5 (hours): 0
+                        Power Cycle Event 5: 0
+                Flash LED Event 6:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 6 (hours): 0
+                        Power Cycle Event 6: 0
+                Flash LED Event 7:
+                        Event Information: 0x0000000000000000
+                        Timestamp of Event 7 (hours): 0
+                        Power Cycle Event 7: 0
+                Uncorrectable errors: 0
+                Cumulative Lifetime Unrecoverable Read errors due to ERC: 0
+                Cum Lifetime Unrecoverable by head 0:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 1:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 2:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 3:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 4:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 5:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 6:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 7:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 8:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 9:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 10:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 11:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 12:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 13:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 14:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 15:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 16:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 17:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 18:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+                Cum Lifetime Unrecoverable by head 19:
+                        Cumulative Lifetime Unrecoverable Read Repeating: 0
+                        Cumulative Lifetime Unrecoverable Read Unique: 0
+        FARM Log Page 4: Environment Statistics
+                Current Temperature (Celsius): 29
+                Highest Temperature: 39
+                Lowest Temperature: 24
+                Average Short Term Temperature: 29
+                Average Long Term Temperature: 0
+                Highest Average Short Term Temperature: 36
+                Lowest Average Short Term Temperature: 27
+                Highest Average Long Term Temperature: 0
+                Lowest Average Long Term Temperature: 0
+                Time In Over Temperature (minutes): 0
+                Time In Under Temperature (minutes): 0
+                Specified Max Operating Temperature: 60
+                Specified Min Operating Temperature: 5
+                Current Relative Humidity: 0
+                Current Motor Power: 4604
+                Current 12 volts: 12.196
+                Minimum 12 volts: 12.137
+                Maximum 12 volts: 12.257
+                Current 5 volts: 5.100
+                Minimum 5 volts: 5.028
+                Maximum 5 volts: 5.110
+                12V Power Average: 0.000
+                12V Power Minimum: 0.000
+                12V Power Maximum: 0.000
+                5V Power Average: 0.000
+                5V Power Minimum: 0.000
+                5V Power Maximum: 0.000
+        FARM Log Page 5: Reliability Statistics
+                Error Rate (SMART Attribute 1 Raw): 0x0000000005c97dad
+                Error Rate (SMART Attribute 1 Normalized): 80
+                Error Rate (SMART Attribute 1 Worst): 64
+                Seek Error Rate (SMART Attr 7 Raw): 0x0000000002474d60
+                Seek Error Rate (SMART Attr 7 Normalized): 76
+                Seek Error Rate (SMART Attr 7 Worst): 60
+                High Priority Unload Events: 1
+                Helium Pressure Threshold Tripped: 0
+                LBAs Corrected By Parity Sector: 0
+                DVGA Skip Write Detect by Head 0: 0
+                DVGA Skip Write Detect by Head 1: 0
+                DVGA Skip Write Detect by Head 2: 0
+                DVGA Skip Write Detect by Head 3: 0
+                DVGA Skip Write Detect by Head 4: 0
+                DVGA Skip Write Detect by Head 5: 0
+                DVGA Skip Write Detect by Head 6: 0
+                DVGA Skip Write Detect by Head 7: 0
+                DVGA Skip Write Detect by Head 8: 0
+                DVGA Skip Write Detect by Head 9: 0
+                DVGA Skip Write Detect by Head 10: 0
+                DVGA Skip Write Detect by Head 11: 0
+                DVGA Skip Write Detect by Head 12: 0
+                DVGA Skip Write Detect by Head 13: 0
+                DVGA Skip Write Detect by Head 14: 0
+                DVGA Skip Write Detect by Head 15: 0
+                DVGA Skip Write Detect by Head 16: 0
+                DVGA Skip Write Detect by Head 17: 0
+                DVGA Skip Write Detect by Head 18: 0
+                DVGA Skip Write Detect by Head 19: 0
+                RVGA Skip Write Detect by Head 0: 0
+                RVGA Skip Write Detect by Head 1: 0
+                RVGA Skip Write Detect by Head 2: 0
+                RVGA Skip Write Detect by Head 3: 0
+                RVGA Skip Write Detect by Head 4: 0
+                RVGA Skip Write Detect by Head 5: 0
+                RVGA Skip Write Detect by Head 6: 0
+                RVGA Skip Write Detect by Head 7: 0
+                RVGA Skip Write Detect by Head 8: 0
+                RVGA Skip Write Detect by Head 9: 0
+                RVGA Skip Write Detect by Head 10: 0
+                RVGA Skip Write Detect by Head 11: 0
+                RVGA Skip Write Detect by Head 12: 0
+                RVGA Skip Write Detect by Head 13: 0
+                RVGA Skip Write Detect by Head 14: 0
+                RVGA Skip Write Detect by Head 15: 0
+                RVGA Skip Write Detect by Head 16: 0
+                RVGA Skip Write Detect by Head 17: 0
+                RVGA Skip Write Detect by Head 18: 0
+                RVGA Skip Write Detect by Head 19: 0
+                FVGA Skip Write Detect by Head 0: 0
+                FVGA Skip Write Detect by Head 1: 0
+                FVGA Skip Write Detect by Head 2: 0
+                FVGA Skip Write Detect by Head 3: 0
+                FVGA Skip Write Detect by Head 4: 0
+                FVGA Skip Write Detect by Head 5: 0
+                FVGA Skip Write Detect by Head 6: 0
+                FVGA Skip Write Detect by Head 7: 0
+                FVGA Skip Write Detect by Head 8: 0
+                FVGA Skip Write Detect by Head 9: 0
+                FVGA Skip Write Detect by Head 10: 0
+                FVGA Skip Write Detect by Head 11: 0
+                FVGA Skip Write Detect by Head 12: 0
+                FVGA Skip Write Detect by Head 13: 0
+                FVGA Skip Write Detect by Head 14: 0
+                FVGA Skip Write Detect by Head 15: 0
+                FVGA Skip Write Detect by Head 16: 0
+                FVGA Skip Write Detect by Head 17: 0
+                FVGA Skip Write Detect by Head 18: 0
+                FVGA Skip Write Detect by Head 19: 0
+                Skip Write Detect Threshold Exceeded by Head 0: 0
+                Skip Write Detect Threshold Exceeded by Head 1: 0
+                Skip Write Detect Threshold Exceeded by Head 2: 0
+                Skip Write Detect Threshold Exceeded by Head 3: 0
+                Skip Write Detect Threshold Exceeded by Head 4: 0
+                Skip Write Detect Threshold Exceeded by Head 5: 0
+                Skip Write Detect Threshold Exceeded by Head 6: 0
+                Skip Write Detect Threshold Exceeded by Head 7: 0
+                Skip Write Detect Threshold Exceeded by Head 8: 0
+                Skip Write Detect Threshold Exceeded by Head 9: 0
+                Skip Write Detect Threshold Exceeded by Head 10: 0
+                Skip Write Detect Threshold Exceeded by Head 11: 0
+                Skip Write Detect Threshold Exceeded by Head 12: 0
+                Skip Write Detect Threshold Exceeded by Head 13: 0
+                Skip Write Detect Threshold Exceeded by Head 14: 0
+                Skip Write Detect Threshold Exceeded by Head 15: 0
+                Skip Write Detect Threshold Exceeded by Head 16: 0
+                Skip Write Detect Threshold Exceeded by Head 17: 0
+                Skip Write Detect Threshold Exceeded by Head 18: 0
+                Skip Write Detect Threshold Exceeded by Head 19: 0
+                Write Power On (hrs) by Head 0: 1046
+                Write Power On (hrs) by Head 1: 29325713
+                Write Power On (hrs) by Head 2: 1190
+                Write Power On (hrs) by Head 3: 7384398
+                Write Power On (hrs) by Head 4: 24819280
+                Write Power On (hrs) by Head 5: 28018095
+                Write Power On (hrs) by Head 6: 1203
+                Write Power On (hrs) by Head 7: 1115
+                Write Power On (hrs) by Head 8: 1149
+                Write Power On (hrs) by Head 9: 1127
+                Write Power On (hrs) by Head 10: 1104
+                Write Power On (hrs) by Head 11: 1120
+                Write Power On (hrs) by Head 12: 6287707
+                Write Power On (hrs) by Head 13: 6426717
+                Write Power On (hrs) by Head 14: 1037
+                Write Power On (hrs) by Head 15: 1124
+                Write Power On (hrs) by Head 16: 1083
+                Write Power On (hrs) by Head 17: 37747593
+                Write Power On (hrs) by Head 18: 6205094
+                Write Power On (hrs) by Head 19: 1043
+                MR Head Resistance from Head 0: 410
+                MR Head Resistance from Head 1: 542
+                MR Head Resistance from Head 2: 434
+                MR Head Resistance from Head 3: 365
+                MR Head Resistance from Head 4: 531
+                MR Head Resistance from Head 5: 422
+                MR Head Resistance from Head 6: 538
+                MR Head Resistance from Head 7: 392
+                MR Head Resistance from Head 8: 485
+                MR Head Resistance from Head 9: 497
+                MR Head Resistance from Head 10: 505
+                MR Head Resistance from Head 11: 506
+                MR Head Resistance from Head 12: 509
+                MR Head Resistance from Head 13: 428
+                MR Head Resistance from Head 14: 392
+                MR Head Resistance from Head 15: 478
+                MR Head Resistance from Head 16: 348
+                MR Head Resistance from Head 17: 505
+                MR Head Resistance from Head 18: 366
+                MR Head Resistance from Head 19: 467
+                Second MR Head Resistance by Head 0: 390
+                Second MR Head Resistance by Head 1: 583
+                Second MR Head Resistance by Head 2: 508
+                Second MR Head Resistance by Head 3: 344
+                Second MR Head Resistance by Head 4: 484
+                Second MR Head Resistance by Head 5: 400
+                Second MR Head Resistance by Head 6: 478
+                Second MR Head Resistance by Head 7: 385
+                Second MR Head Resistance by Head 8: 458
+                Second MR Head Resistance by Head 9: 465
+                Second MR Head Resistance by Head 10: 425
+                Second MR Head Resistance by Head 11: 427
+                Second MR Head Resistance by Head 12: 394
+                Second MR Head Resistance by Head 13: 430
+                Second MR Head Resistance by Head 14: 354
+                Second MR Head Resistance by Head 15: 433
+                Second MR Head Resistance by Head 16: 367
+                Second MR Head Resistance by Head 17: 397
+                Second MR Head Resistance by Head 18: 483
+                Second MR Head Resistance by Head 19: 467
+                Number of Reallocated Sectors by Head 0: 0
+                Number of Reallocated Sectors by Head 1: 0
+                Number of Reallocated Sectors by Head 2: 0
+                Number of Reallocated Sectors by Head 3: 0
+                Number of Reallocated Sectors by Head 4: 0
+                Number of Reallocated Sectors by Head 5: 0
+                Number of Reallocated Sectors by Head 6: 0
+                Number of Reallocated Sectors by Head 7: 0
+                Number of Reallocated Sectors by Head 8: 0
+                Number of Reallocated Sectors by Head 9: 0
+                Number of Reallocated Sectors by Head 10: 0
+                Number of Reallocated Sectors by Head 11: 0
+                Number of Reallocated Sectors by Head 12: 0
+                Number of Reallocated Sectors by Head 13: 0
+                Number of Reallocated Sectors by Head 14: 0
+                Number of Reallocated Sectors by Head 15: 0
+                Number of Reallocated Sectors by Head 16: 0
+                Number of Reallocated Sectors by Head 17: 0
+                Number of Reallocated Sectors by Head 18: 0
+                Number of Reallocated Sectors by Head 19: 0
+                Number of Reallocation Candidate Sectors by Head 0: 0
+                Number of Reallocation Candidate Sectors by Head 1: 0
+                Number of Reallocation Candidate Sectors by Head 2: 0
+                Number of Reallocation Candidate Sectors by Head 3: 0
+                Number of Reallocation Candidate Sectors by Head 4: 0
+                Number of Reallocation Candidate Sectors by Head 5: 0
+                Number of Reallocation Candidate Sectors by Head 6: 0
+                Number of Reallocation Candidate Sectors by Head 7: 0
+                Number of Reallocation Candidate Sectors by Head 8: 0
+                Number of Reallocation Candidate Sectors by Head 9: 0
+                Number of Reallocation Candidate Sectors by Head 10: 0
+                Number of Reallocation Candidate Sectors by Head 11: 0
+                Number of Reallocation Candidate Sectors by Head 12: 0
+                Number of Reallocation Candidate Sectors by Head 13: 0
+                Number of Reallocation Candidate Sectors by Head 14: 0
+                Number of Reallocation Candidate Sectors by Head 15: 0
+                Number of Reallocation Candidate Sectors by Head 16: 0
+                Number of Reallocation Candidate Sectors by Head 17: 0
+                Number of Reallocation Candidate Sectors by Head 18: 0
+                Number of Reallocation Candidate Sectors by Head 19: 0

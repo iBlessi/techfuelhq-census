@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: The five censuses, with what each has published
+    url: https://techfuelhq.com/data/
+    about: Start here to read the data or to build a report.
+  - name: A correction to a row, or a question about the method
+    url: https://techfuelhq.com/contact/
+    about: Write to the maintainer.

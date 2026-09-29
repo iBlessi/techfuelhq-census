@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/iBlessi/techfuelhq-census/main/censuses/post-time/schema.json",
+  "title": "TechFuelHQ POST Time Census",
+  "description": "One row is one boot of one machine. In the CSV every value is text and an empty cell means the field was left out. Dataset version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "os": {
+      "title": "Read from",
+      "type": "string",
+      "enum": [
+        "windows",
+        "linux"
+      ],
+      "x-source": "machine"
+    },
+    "platform": {
+      "title": "Platform",
+      "type": "string",
+      "enum": [
+        "am5",
+        "am4",
+        "lga1851",
+        "lga1700",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "cpu": {
+      "title": "Processor",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "machine"
+    },
+    "board_vendor": {
+      "title": "Board maker",
+      "type": "string",
+      "maxLength": 60,
+      "x-source": "machine"
+    },
+    "board": {
+      "title": "Board",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "machine"
+    },
+    "bios_version": {
+      "title": "BIOS version",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "machine"
+    },
+    "bios_date": {
+      "title": "BIOS date",
+      "type": "string",
+      "format": "date",
+      "x-source": "machine"
+    },
+    "dimms": {
+      "title": "Memory modules",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16,
+      "x-source": "machine"
+    },
+    "ram_gb": {
+      "title": "Memory (GB)",
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 2048,
+      "x-source": "machine"
+    },
+    "ram_speed": {
+      "title": "Memory speed as configured",
+      "type": "integer",
+      "minimum": 400,
+      "maximum": 12000,
+      "x-source": "machine"
+    },
+    "memory_fast_boot": {
+      "title": "Memory training shortcut in the BIOS",
+      "description": "Memory Context Restore on AMD boards, MRC Fast Boot on Intel boards.",
+      "type": "string",
+      "enum": [
+        "on",
+        "off",
+        "auto",
+        "unknown"
+      ],
+      "x-source": "human"
+    },
+    "boot_kind": {
+      "title": "How the machine was last started",
+      "type": "string",
+      "enum": [
+        "restart",
+        "cold-boot",
+        "unknown"
+      ],
+      "x-source": "human"
+    },
+    "fast_startup": {
+      "title": "Windows Fast Startup",
+      "type": "string",
+      "enum": [
+        "on",
+        "off",
+        "not-applicable",
+        "unknown"
+      ],
+      "x-source": "machine"
+    },
+    "fw_post_ms": {
+      "title": "Firmware time (ms)",
+      "type": "integer",
+      "minimum": 500,
+      "maximum": 900000,
+      "x-source": "machine"
+    },
+    "os_build": {
+      "title": "System build",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "machine"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string",
+      "maxLength": 280,
+      "x-source": "human"
+    },
+    "submitted_date": {
+      "title": "The day the report was sent",
+      "type": "string",
+      "format": "date",
+      "x-source": "intake"
+    },
+    "source_issue": {
+      "title": "The issue the row came from",
+      "type": "integer",
+      "minimum": 1,
+      "x-source": "intake"
+    }
+  },
+  "required": [
+    "os",
+    "platform",
+    "cpu",
+    "board_vendor",
+    "board",
+    "bios_version",
+    "dimms",
+    "ram_gb",
+    "memory_fast_boot",
+    "boot_kind",
+    "fast_startup",
+    "fw_post_ms",
+    "submitted_date"
+  ]
+}

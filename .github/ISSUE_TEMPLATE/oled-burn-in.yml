@@ -1,0 +1,28 @@
+name: OLED burn-in report
+description: "One monitor, judged once. A panel with nothing to see is a report the census wants."
+title: "[oled-burn-in] "
+labels: ["report", "census:oled-burn-in"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Build the report on the census page: https://techfuelhq.com/data/oled-burn-in-census/
+
+        It shows the test slides, asks what you see, and writes the block below. Nothing has to be written by hand.
+  - type: textarea
+    id: report
+    attributes:
+      label: Report
+      description: The block the census page wrote. Paste it as it is.
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before you send
+      options:
+        - label: This is my own hardware, and I took this reading myself.
+          required: true
+        - label: I release this report under CC BY 4.0.
+          required: true

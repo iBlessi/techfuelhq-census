@@ -1,0 +1,727 @@
+smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.1.0-31-amd64] (local build)
+Copyright (C) 2002-23, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Device Model:     ST24000NM000C-3WD103
+Serial Number:    [removed]
+LU WWN Device Id: [removed]
+Firmware Version: SN02
+User Capacity:    24,000,277,250,048 bytes [24.0 TB]
+Sector Size:      4096 bytes logical/physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        Not in smartctl database 7.3/5528
+ATA Version is:   ACS-5 (minor revision not indicated)
+SATA Version is:  SATA 3.3, 6.0 Gb/s (current: 6.0 Gb/s)
+Local Time is:    Sat Mar  1 20:53:37 2025 EST
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+AAM feature is:   Unavailable
+APM feature is:   Unavailable
+Rd look-ahead is: Enabled
+Write cache is:   Enabled
+DSN feature is:   Disabled
+ATA Security is:  Disabled, NOT FROZEN [SEC1]
+Write SCT (Get) Feature Control Command failed: scsi error unsupported field in scsi command
+Wt Cache Reorder: Unknown (SCT Feature Control command failed)
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+
+General SMART Values:
+Offline data collection status:  (0x82)	Offline data collection activity
+					was completed without error.
+					Auto Offline Data Collection: Enabled.
+Self-test execution status:      (   0)	The previous self-test routine completed
+					without error or no self-test has ever
+					been run.
+Total time to complete Offline
+data collection: 		( 1059) seconds.
+Offline data collection
+capabilities: 			 (0x7b) SMART execute Offline immediate.
+					Auto Offline data collection on/off support.
+					Suspend Offline collection upon new
+					command.
+					Offline surface scan supported.
+					Self-test supported.
+					Conveyance Self-test supported.
+					Selective Self-test supported.
+SMART capabilities:            (0x0003)	Saves SMART data before entering
+					power-saving mode.
+					Supports SMART auto save timer.
+Error logging capability:        (0x01)	Error logging supported.
+					General Purpose Logging supported.
+Short self-test routine
+recommended polling time: 	 (   2) minutes.
+Extended self-test routine
+recommended polling time: 	 (2291) minutes.
+Conveyance self-test routine
+recommended polling time: 	 (   3) minutes.
+SCT capabilities: 	       (0x50bd)	SCT Status supported.
+					SCT Error Recovery Control supported.
+					SCT Feature Control supported.
+					SCT Data Table supported.
+
+SMART Attributes Data Structure revision number: 10
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAGS    VALUE WORST THRESH FAIL RAW_VALUE
+  1 Raw_Read_Error_Rate     POSR--   077   064   044    -    6731346
+  3 Spin_Up_Time            PO----   092   092   000    -    0
+  4 Start_Stop_Count        -O--CK   100   100   020    -    9
+  5 Reallocated_Sector_Ct   PO--CK   100   100   010    -    0
+  7 Seek_Error_Rate         POSR--   081   060   045    -    117575073
+  9 Power_On_Hours          -O--CK   100   100   000    -    438
+ 10 Spin_Retry_Count        PO--C-   100   100   097    -    0
+ 12 Power_Cycle_Count       -O--CK   100   100   020    -    9
+ 18 Unknown_Attribute       PO-R--   100   100   050    -    0
+187 Reported_Uncorrect      -O--CK   100   100   000    -    0
+188 Command_Timeout         -O--CK   100   100   000    -    0
+190 Airflow_Temperature_Cel -O---K   066   047   000    -    34 (Min/Max 31/42)
+192 Power-Off_Retract_Count -O--CK   100   100   000    -    4
+193 Load_Cycle_Count        -O--CK   100   100   000    -    25
+194 Temperature_Celsius     -O---K   034   053   000    -    34 (0 22 0 0 0)
+197 Current_Pending_Sector  -O--C-   100   100   000    -    0
+198 Offline_Uncorrectable   ----C-   100   100   000    -    0
+199 UDMA_CRC_Error_Count    -OSRCK   200   200   000    -    0
+200 Multi_Zone_Error_Rate   PO---K   100   100   001    -    0
+240 Head_Flying_Hours       ------   100   100   000    -    437 (170 92 0)
+241 Total_LBAs_Written      ------   100   253   000    -    17179908005
+242 Total_LBAs_Read         ------   100   253   000    -    17840448287
+                            ||||||_ K auto-keep
+                            |||||__ C event count
+                            ||||___ R error rate
+                            |||____ S speed/performance
+                            ||_____ O updated online
+                            |______ P prefailure warning
+
+General Purpose Log Directory Version 1
+SMART           Log Directory Version 1 [multi-sector log support]
+Address    Access  R/W   Size  Description
+0x00       GPL,SL  R/O      1  Log Directory
+0x01           SL  R/O      1  Summary SMART error log
+0x02           SL  R/O      5  Comprehensive SMART error log
+0x03       GPL     R/O      5  Ext. Comprehensive SMART error log
+0x04       GPL     R/O    256  Device Statistics log
+0x04       SL      R/O      8  Device Statistics log
+0x06           SL  R/O      1  SMART self-test log
+0x07       GPL     R/O      1  Extended self-test log
+0x08       GPL     R/O      2  Power Conditions log
+0x09           SL  R/W      1  Selective self-test log
+0x0a       GPL     R/W      8  Device Statistics Notification
+0x0c       GPL     R/O   2048  Pending Defects log
+0x0f       GPL     R/O      2  Sense Data for Successful NCQ Cmds log
+0x10       GPL     R/O      1  NCQ Command Error log
+0x11       GPL     R/O      1  SATA Phy Event Counters log
+0x13       GPL     R/O      1  SATA NCQ Send and Receive log
+0x21       GPL     R/O      1  Write stream error log
+0x22       GPL     R/O      1  Read stream error log
+0x24       GPL     R/O    768  Current Device Internal Status Data log
+0x2f       GPL     R/O      1  Set Sector Configuration
+0x30       GPL,SL  R/O      9  IDENTIFY DEVICE data log
+0x80-0x9f  GPL,SL  R/W     16  Host vendor specific log
+0xa1       GPL,SL  VS     160  Device vendor specific log
+0xa2       GPL     VS   16320  Device vendor specific log
+0xa4       GPL,SL  VS     160  Device vendor specific log
+0xa6       GPL     VS     192  Device vendor specific log
+0xa8-0xa9  GPL,SL  VS     136  Device vendor specific log
+0xab       GPL     VS       1  Device vendor specific log
+0xad       GPL     VS      16  Device vendor specific log
+0xb1       GPL,SL  VS     160  Device vendor specific log
+0xb4       GPL,SL  VS      16  Device vendor specific log
+0xb6       GPL     VS    1920  Device vendor specific log
+0xbc       GPL     VS       1  Device vendor specific log
+0xbe-0xbf  GPL     VS   65535  Device vendor specific log
+0xc1       GPL,SL  VS       8  Device vendor specific log
+0xc3       GPL,SL  VS      96  Device vendor specific log
+0xc6       GPL     VS    5184  Device vendor specific log
+0xc7       GPL,SL  VS       8  Device vendor specific log
+0xc9       GPL,SL  VS       8  Device vendor specific log
+0xca       GPL,SL  VS      16  Device vendor specific log
+0xcd       GPL,SL  VS       1  Device vendor specific log
+0xce       GPL     VS       1  Device vendor specific log
+0xcf       GPL     VS     512  Device vendor specific log
+0xd1       GPL     VS     360  Device vendor specific log
+0xd2       GPL     VS   10256  Device vendor specific log
+0xd4       GPL     VS    2048  Device vendor specific log
+0xda       GPL,SL  VS       1  Device vendor specific log
+0xe0       GPL,SL  R/W      1  SCT Command/Status
+0xe1       GPL,SL  R/W      1  SCT Data Transfer
+
+SMART Extended Comprehensive Error Log Version: 1 (5 sectors)
+No Errors Logged
+
+SMART Extended Self-test Log Version: 1 (1 sectors)
+Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA_of_first_error
+# 1  Short offline       Completed without error       00%         0         -
+
+SMART Selective self-test log data structure revision number 1
+ SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
+    1        0        0  Not_testing
+    2        0        0  Not_testing
+    3        0        0  Not_testing
+    4        0        0  Not_testing
+    5        0        0  Not_testing
+Selective self-test flags (0x0):
+  After scanning selected spans, do NOT read-scan remainder of disk.
+If Selective self-test is pending on power-up, resume after 0 minute delay.
+
+SCT Status Version:                  3
+SCT Version (vendor specific):       522 (0x020a)
+Device State:                        Active (0)
+Current Temperature:                    34 Celsius
+Power Cycle Min/Max Temperature:     31/42 Celsius
+Lifetime    Min/Max Temperature:     22/53 Celsius
+Specified Max Operating Temperature:    60 Celsius
+Under/Over Temperature Limit Count:   0/2
+SMART Status:                        0xc24f (PASSED)
+Vendor specific:
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00
+
+SCT Temperature History Version:     2
+Temperature Sampling Period:         1 minute
+Temperature Logging Interval:        59 minutes
+Min/Max recommended Temperature:     10/40 Celsius
+Min/Max Temperature Limit:           10/60 Celsius
+Temperature History Size (Index):    128 (77)
+
+Index    Estimated Time   Temperature Celsius
+  78    2025-02-24 15:53    42  ***********************
+  79    2025-02-24 16:52    42  ***********************
+  80    2025-02-24 17:51    44  *************************
+  81    2025-02-24 18:50    48  *****************************
+  82    2025-02-24 19:49    49  ******************************
+  83    2025-02-24 20:48    51  ********************************
+  84    2025-02-24 21:47    47  ****************************
+  85    2025-02-24 22:46    46  ***************************
+  86    2025-02-24 23:45    43  ************************
+  87    2025-02-25 00:44    43  ************************
+  88    2025-02-25 01:43    43  ************************
+  89    2025-02-25 02:42    47  ****************************
+  90    2025-02-25 03:41    47  ****************************
+  91    2025-02-25 04:40    46  ***************************
+  92    2025-02-25 05:39    44  *************************
+  93    2025-02-25 06:38    43  ************************
+  94    2025-02-25 07:37    43  ************************
+  95    2025-02-25 08:36    43  ************************
+  96    2025-02-25 09:35    42  ***********************
+  97    2025-02-25 10:34    42  ***********************
+  98    2025-02-25 11:33    42  ***********************
+  99    2025-02-25 12:32    41  **********************
+ 100    2025-02-25 13:31    42  ***********************
+ 101    2025-02-25 14:30    39  ********************
+ ...    ..(  3 skipped).    ..  ********************
+ 105    2025-02-25 18:26    39  ********************
+ 106    2025-02-25 19:25    43  ************************
+ 107    2025-02-25 20:24    47  ****************************
+ 108    2025-02-25 21:23    48  *****************************
+ 109    2025-02-25 22:22    45  **************************
+ 110    2025-02-25 23:21    46  ***************************
+ 111    2025-02-26 00:20    46  ***************************
+ 112    2025-02-26 01:19    46  ***************************
+ 113    2025-02-26 02:18    47  ****************************
+ 114    2025-02-26 03:17    44  *************************
+ 115    2025-02-26 04:16    43  ************************
+ 116    2025-02-26 05:15    42  ***********************
+ 117    2025-02-26 06:14    44  *************************
+ 118    2025-02-26 07:13    45  **************************
+ 119    2025-02-26 08:12    44  *************************
+ 120    2025-02-26 09:11    44  *************************
+ 121    2025-02-26 10:10    39  ********************
+ 122    2025-02-26 11:09    38  *******************
+ ...    ..(  2 skipped).    ..  *******************
+ 125    2025-02-26 14:06    38  *******************
+ 126    2025-02-26 15:05    39  ********************
+ 127    2025-02-26 16:04    43  ************************
+ ...    ..(  2 skipped).    ..  ************************
+   2    2025-02-26 19:01    43  ************************
+   3    2025-02-26 20:00    44  *************************
+   4    2025-02-26 20:59    45  **************************
+   5    2025-02-26 21:58    43  ************************
+   6    2025-02-26 22:57    44  *************************
+   7    2025-02-26 23:56    47  ****************************
+   8    2025-02-27 00:55    48  *****************************
+   9    2025-02-27 01:54    51  ********************************
+  10    2025-02-27 02:53    51  ********************************
+  11    2025-02-27 03:52    49  ******************************
+  12    2025-02-27 04:51    50  *******************************
+  13    2025-02-27 05:50    52  *********************************
+  14    2025-02-27 06:49    51  ********************************
+  15    2025-02-27 07:48    48  *****************************
+  16    2025-02-27 08:47    47  ****************************
+  17    2025-02-27 09:46    46  ***************************
+  18    2025-02-27 10:45    45  **************************
+  19    2025-02-27 11:44    45  **************************
+  20    2025-02-27 12:43    45  **************************
+  21    2025-02-27 13:42    44  *************************
+ ...    ..(  4 skipped).    ..  *************************
+  26    2025-02-27 18:37    44  *************************
+  27    2025-02-27 19:36    41  **********************
+  28    2025-02-27 20:35     ?  -
+  29    2025-02-27 21:34    31  ************
+  30    2025-02-27 22:33    35  ****************
+  31    2025-02-27 23:32    35  ****************
+  32    2025-02-28 00:31    35  ****************
+  33    2025-02-28 01:30    36  *****************
+  34    2025-02-28 02:29    33  **************
+  35    2025-02-28 03:28    35  ****************
+ ...    ..(  3 skipped).    ..  ****************
+  39    2025-02-28 07:24    35  ****************
+  40    2025-02-28 08:23    33  **************
+  41    2025-02-28 09:22    34  ***************
+  42    2025-02-28 10:21    35  ****************
+ ...    ..(  5 skipped).    ..  ****************
+  48    2025-02-28 16:15    35  ****************
+  49    2025-02-28 17:14    34  ***************
+  50    2025-02-28 18:13    35  ****************
+  51    2025-02-28 19:12    39  ********************
+  52    2025-02-28 20:11    42  ***********************
+  53    2025-02-28 21:10    39  ********************
+  54    2025-02-28 22:09    38  *******************
+  55    2025-02-28 23:08    37  ******************
+ ...    ..(  7 skipped).    ..  ******************
+  63    2025-03-01 07:00    37  ******************
+  64    2025-03-01 07:59    36  *****************
+  65    2025-03-01 08:58    39  ********************
+  66    2025-03-01 09:57    41  **********************
+  67    2025-03-01 10:56    38  *******************
+  68    2025-03-01 11:55    39  ********************
+  69    2025-03-01 12:54    38  *******************
+  70    2025-03-01 13:53    37  ******************
+  71    2025-03-01 14:52    36  *****************
+  72    2025-03-01 15:51    35  ****************
+  73    2025-03-01 16:50    34  ***************
+ ...    ..(  2 skipped).    ..  ***************
+  76    2025-03-01 19:47    34  ***************
+  77    2025-03-01 20:46    35  ****************
+
+SCT Error Recovery Control:
+           Read:     70 (7.0 seconds)
+          Write:     70 (7.0 seconds)
+
+Device Statistics (GP Log 0x04)
+Page  Offset Size        Value Flags Description
+0x01  =====  =               =  ===  == General Statistics (rev 1) ==
+0x01  0x008  4               9  ---  Lifetime Power-On Resets
+0x01  0x010  4             438  ---  Power-on Hours
+0x01  0x018  6     17179908005  ---  Logical Sectors Written
+0x01  0x020  6       125100109  ---  Number of Write Commands
+0x01  0x028  6     17840448287  ---  Logical Sectors Read
+0x01  0x030  6       151601781  ---  Number of Read Commands
+0x01  0x038  6               -  ---  Date and Time TimeStamp
+0x03  =====  =               =  ===  == Rotating Media Statistics (rev 1) ==
+0x03  0x008  4             437  ---  Spindle Motor Power-on Hours
+0x03  0x010  4             437  ---  Head Flying Hours
+0x03  0x018  4              25  ---  Head Load Events
+0x03  0x020  4               0  ---  Number of Reallocated Logical Sectors
+0x03  0x028  4               0  ---  Read Recovery Attempts
+0x03  0x030  4               0  ---  Number of Mechanical Start Failures
+0x03  0x038  4               0  ---  Number of Realloc. Candidate Logical Sectors
+0x03  0x040  4               4  ---  Number of High Priority Unload Events
+0x04  =====  =               =  ===  == General Errors Statistics (rev 1) ==
+0x04  0x008  4               0  ---  Number of Reported Uncorrectable Errors
+0x04  0x010  4               0  ---  Resets Between Cmd Acceptance and Completion
+0x04  0x018  4               0  -D-  Physical Element Status Changed
+0x05  =====  =               =  ===  == Temperature Statistics (rev 1) ==
+0x05  0x008  1              34  ---  Current Temperature
+0x05  0x010  1              36  ---  Average Short Term Temperature
+0x05  0x018  1               -  ---  Average Long Term Temperature
+0x05  0x020  1              53  ---  Highest Temperature
+0x05  0x028  1              29  ---  Lowest Temperature
+0x05  0x030  1              46  ---  Highest Average Short Term Temperature
+0x05  0x038  1              35  ---  Lowest Average Short Term Temperature
+0x05  0x040  1               -  ---  Highest Average Long Term Temperature
+0x05  0x048  1               -  ---  Lowest Average Long Term Temperature
+0x05  0x050  4               0  ---  Time in Over-Temperature
+0x05  0x058  1              60  ---  Specified Maximum Operating Temperature
+0x05  0x060  4               0  ---  Time in Under-Temperature
+0x05  0x068  1              10  ---  Specified Minimum Operating Temperature
+0x06  =====  =               =  ===  == Transport Statistics (rev 1) ==
+0x06  0x008  4              11  ---  Number of Hardware Resets
+0x06  0x010  4               3  ---  Number of ASR Events
+0x06  0x018  4               0  ---  Number of Interface CRC Errors
+0xff  =====  =               =  ===  == Vendor Specific Statistics (rev 1) ==
+0xff  0x008  7               0  ---  Vendor Specific
+0xff  0x010  7               0  ---  Vendor Specific
+0xff  0x018  7               0  ---  Vendor Specific
+                                |||_ C monitored condition met
+                                ||__ D supports DSN
+                                |___ N normalized value
+
+Pending Defects log (GP Log 0x0c)
+No Defects Logged
+
+SATA Phy Event Counters (GP Log 0x11)
+ID      Size     Value  Description
+0x000a  2            1  Device-to-host register FISes sent due to a COMRESET
+0x0001  2            0  Command failed due to ICRC error
+0x0003  2            0  R_ERR response for device-to-host data FIS
+0x0004  2            0  R_ERR response for host-to-device data FIS
+0x0006  2            0  R_ERR response for device-to-host non-data FIS
+0x0007  2            0  R_ERR response for host-to-device non-data FIS
+0x000b  2            0  CRC errors within host-to-device FIS
+0x000d  2            0  Non-CRC errors within host-to-device FIS
+
+Seagate Field Access Reliability Metrics log (FARM) (GP Log 0xa6)
+	FARM Log Page 0: Log Header
+		FARM Log Version: 4.36
+		Pages Supported: 6
+		Log Size: 98304
+		Page Size: 16384
+		Heads Supported: 24
+		Number of Copies: 0
+		Reason for Frame Capture: 0
+	FARM Log Page 1: Drive Information
+		Serial Number: [removed]
+		World Wide Name: [removed]
+		Device Interface: SATA
+		Device Capacity in Sectors: 5859442688
+		Physical Sector Size: 4096
+		Logical Sector Size: 4096
+		Device Buffer Size: 536870912
+		Number of Heads: 18
+		Device Form Factor: 3.5 inches
+		Rotation Rate: 7200 rpm
+		Firmware Rev: SN02
+		ATA Security State (ID Word 128): 0x01621
+		ATA Features Supported (ID Word 78): 0x016cc
+		ATA Features Enabled (ID Word 79): 0x0000000000000044
+		Power on Hours: 438
+		Spindle Power on Hours: 437
+		Head Flight Hours: 437
+		Head Load Events: 25
+		Power Cycle Count: 10
+		Hardware Reset Count: 11
+		Spin-up Time: 7 ms
+		Time to ready of the last power cycle: 26365 ms
+		Time drive is held in staggered spin: 38356 ms
+		Model Number: ST24000NM000C-3WD103
+		Drive Recording Type: CMR
+		Max Number of Available Sectors for Reassignment: 18204
+		Assembly Date (YYWW): 4232
+		Depopulation Head Mask: 0
+	FARM Log Page 2: Workload Statistics
+		Total Number of Read Commands: 147437800
+		Total Number of Write Commands: 125100109
+		Total Number of Random Read Commands: 21179137
+		Total Number of Random Write Commands: 82119033
+		Total Number Of Other Commands: 631981
+		Logical Sectors Written: 17179908005
+		Logical Sectors Read: 17307698094
+		Number of dither events during current power cycle: 559
+		Number of times dither was held off during random workloads: 43660
+		Number of times dither was held off during sequential workloads: 6655
+		Number of Read commands from 0-3.125% of LBA space for last 3 SMART Summary Frames: 4573472
+		Number of Read commands from 3.125-25% of LBA space for last 3 SMART Summary Frames: 34205824
+		Number of Read commands from 25-75% of LBA space for last 3 SMART Summary Frames: 21878869
+		Number of Read commands from 75-100% of LBA space for last 3 SMART Summary Frames: 51060171
+		Number of Write commands from 0-3.125% of LBA space for last 3 SMART Summary Frames: 15258543
+		Number of Write commands from 3.125-25% of LBA space for last 3 SMART Summary Frames: 35105984
+		Number of Write commands from 25-75% of LBA space for last 3 SMART Summary Frames: 44264588
+		Number of Write commands from 75-100% of LBA space for last 3 SMART Summary Frames: 78184690
+	FARM Log Page 3: Error Statistics
+		Unrecoverable Read Errors: 0
+		Unrecoverable Write Errors: 0
+		Number of Reallocated Sectors: 0
+		Number of Read Recovery Attempts: 0
+		Number of Mechanical Start Failures: 0
+		Number of Reallocated Candidate Sectors: 0
+		Number of ASR Events: 3
+		Number of Interface CRC Errors: 0
+		Spin Retry Count: 0
+		Spin Retry Count Normalized: 100
+		Spin Retry Count Worst: 100
+		Number of IOEDC Errors (Raw): 0
+		CTO Count Total: 0
+		CTO Count Over 5s: 0
+		CTO Count Over 7.5s: 0
+		Total Flash LED (Assert) Events: 0
+		Index of the last Flash LED: 0
+		Flash LED Event 0:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 0 (hours): 0
+			Power Cycle Event 0: 0
+		Flash LED Event 1:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 1 (hours): 0
+			Power Cycle Event 1: 0
+		Flash LED Event 2:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 2 (hours): 0
+			Power Cycle Event 2: 0
+		Flash LED Event 3:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 3 (hours): 0
+			Power Cycle Event 3: 0
+		Flash LED Event 4:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 4 (hours): 0
+			Power Cycle Event 4: 0
+		Flash LED Event 5:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 5 (hours): 0
+			Power Cycle Event 5: 0
+		Flash LED Event 6:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 6 (hours): 0
+			Power Cycle Event 6: 0
+		Flash LED Event 7:
+			Event Information: 0x0000000000000000
+			Timestamp of Event 7 (hours): 0
+			Power Cycle Event 7: 0
+		Uncorrectable errors: 0
+		Cumulative Lifetime Unrecoverable Read errors due to ERC: 0
+		Cum Lifetime Unrecoverable by head 0:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 1:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 2:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 3:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 4:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 5:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 6:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 7:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 8:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 9:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 10:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 11:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 12:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 13:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 14:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 15:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 16:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+		Cum Lifetime Unrecoverable by head 17:
+			Cumulative Lifetime Unrecoverable Read Repeating: 0
+			Cumulative Lifetime Unrecoverable Read Unique: 0
+	FARM Log Page 4: Environment Statistics
+		Current Temperature (Celsius): 34
+		Highest Temperature: 53
+		Lowest Temperature: 29
+		Average Short Term Temperature: 36
+		Average Long Term Temperature: 0
+		Highest Average Short Term Temperature: 46
+		Lowest Average Short Term Temperature: 35
+		Highest Average Long Term Temperature: 0
+		Lowest Average Long Term Temperature: 0
+		Time In Over Temperature (minutes): 0
+		Time In Under Temperature (minutes): 0
+		Specified Max Operating Temperature: 60
+		Specified Min Operating Temperature: 10
+		Current Relative Humidity: 0
+		Current Motor Power: 7269
+		Current 12 volts: 11.909
+		Minimum 12 volts: 11.874
+		Maximum 12 volts: 11.960
+		Current 5 volts: 4.906
+		Minimum 5 volts: 4.818
+		Maximum 5 volts: 4.960
+		12V Power Average: 0.000
+		12V Power Minimum: 0.272
+		12V Power Maximum: 6.147
+		5V Power Average: 0.000
+		5V Power Minimum: 0.272
+		5V Power Maximum: 4.070
+	FARM Log Page 5: Reliability Statistics
+		Error Rate (SMART Attribute 1 Raw): 0x000000000066b652
+		Error Rate (SMART Attribute 1 Normalized): 77
+		Error Rate (SMART Attribute 1 Worst): 64
+		Seek Error Rate (SMART Attr 7 Raw): 0x0000000007020dd1
+		Seek Error Rate (SMART Attr 7 Normalized): 81
+		Seek Error Rate (SMART Attr 7 Worst): 60
+		High Priority Unload Events: 4
+		Helium Pressure Threshold Tripped: 0
+		LBAs Corrected By Parity Sector: 0
+		DVGA Skip Write Detect by Head 0: 0
+		DVGA Skip Write Detect by Head 1: 0
+		DVGA Skip Write Detect by Head 2: 0
+		DVGA Skip Write Detect by Head 3: 0
+		DVGA Skip Write Detect by Head 4: 0
+		DVGA Skip Write Detect by Head 5: 0
+		DVGA Skip Write Detect by Head 6: 0
+		DVGA Skip Write Detect by Head 7: 0
+		DVGA Skip Write Detect by Head 8: 0
+		DVGA Skip Write Detect by Head 9: 0
+		DVGA Skip Write Detect by Head 10: 0
+		DVGA Skip Write Detect by Head 11: 0
+		DVGA Skip Write Detect by Head 12: 0
+		DVGA Skip Write Detect by Head 13: 0
+		DVGA Skip Write Detect by Head 14: 0
+		DVGA Skip Write Detect by Head 15: 0
+		DVGA Skip Write Detect by Head 16: 0
+		DVGA Skip Write Detect by Head 17: 0
+		RVGA Skip Write Detect by Head 0: 0
+		RVGA Skip Write Detect by Head 1: 0
+		RVGA Skip Write Detect by Head 2: 0
+		RVGA Skip Write Detect by Head 3: 0
+		RVGA Skip Write Detect by Head 4: 0
+		RVGA Skip Write Detect by Head 5: 0
+		RVGA Skip Write Detect by Head 6: 0
+		RVGA Skip Write Detect by Head 7: 0
+		RVGA Skip Write Detect by Head 8: 0
+		RVGA Skip Write Detect by Head 9: 0
+		RVGA Skip Write Detect by Head 10: 0
+		RVGA Skip Write Detect by Head 11: 0
+		RVGA Skip Write Detect by Head 12: 0
+		RVGA Skip Write Detect by Head 13: 0
+		RVGA Skip Write Detect by Head 14: 0
+		RVGA Skip Write Detect by Head 15: 0
+		RVGA Skip Write Detect by Head 16: 0
+		RVGA Skip Write Detect by Head 17: 0
+		FVGA Skip Write Detect by Head 0: 0
+		FVGA Skip Write Detect by Head 1: 0
+		FVGA Skip Write Detect by Head 2: 0
+		FVGA Skip Write Detect by Head 3: 0
+		FVGA Skip Write Detect by Head 4: 0
+		FVGA Skip Write Detect by Head 5: 0
+		FVGA Skip Write Detect by Head 6: 0
+		FVGA Skip Write Detect by Head 7: 0
+		FVGA Skip Write Detect by Head 8: 0
+		FVGA Skip Write Detect by Head 9: 0
+		FVGA Skip Write Detect by Head 10: 0
+		FVGA Skip Write Detect by Head 11: 0
+		FVGA Skip Write Detect by Head 12: 0
+		FVGA Skip Write Detect by Head 13: 0
+		FVGA Skip Write Detect by Head 14: 0
+		FVGA Skip Write Detect by Head 15: 0
+		FVGA Skip Write Detect by Head 16: 0
+		FVGA Skip Write Detect by Head 17: 0
+		Skip Write Detect Threshold Exceeded by Head 0: 0
+		Skip Write Detect Threshold Exceeded by Head 1: 0
+		Skip Write Detect Threshold Exceeded by Head 2: 0
+		Skip Write Detect Threshold Exceeded by Head 3: 0
+		Skip Write Detect Threshold Exceeded by Head 4: 0
+		Skip Write Detect Threshold Exceeded by Head 5: 0
+		Skip Write Detect Threshold Exceeded by Head 6: 0
+		Skip Write Detect Threshold Exceeded by Head 7: 0
+		Skip Write Detect Threshold Exceeded by Head 8: 0
+		Skip Write Detect Threshold Exceeded by Head 9: 0
+		Skip Write Detect Threshold Exceeded by Head 10: 0
+		Skip Write Detect Threshold Exceeded by Head 11: 0
+		Skip Write Detect Threshold Exceeded by Head 12: 0
+		Skip Write Detect Threshold Exceeded by Head 13: 0
+		Skip Write Detect Threshold Exceeded by Head 14: 0
+		Skip Write Detect Threshold Exceeded by Head 15: 0
+		Skip Write Detect Threshold Exceeded by Head 16: 0
+		Skip Write Detect Threshold Exceeded by Head 17: 0
+		Write Power On (hrs) by Head 0: 17943
+		Write Power On (hrs) by Head 1: 17807
+		Write Power On (hrs) by Head 2: 17981
+		Write Power On (hrs) by Head 3: 18057
+		Write Power On (hrs) by Head 4: 18203
+		Write Power On (hrs) by Head 5: 18143
+		Write Power On (hrs) by Head 6: 18230
+		Write Power On (hrs) by Head 7: 18418
+		Write Power On (hrs) by Head 8: 17881
+		Write Power On (hrs) by Head 9: 18403
+		Write Power On (hrs) by Head 10: 18143
+		Write Power On (hrs) by Head 11: 17778
+		Write Power On (hrs) by Head 12: 17574
+		Write Power On (hrs) by Head 13: 18779
+		Write Power On (hrs) by Head 14: 18837
+		Write Power On (hrs) by Head 15: 17704
+		Write Power On (hrs) by Head 16: 18961
+		Write Power On (hrs) by Head 17: 17728
+		MR Head Resistance from Head 0: 844424930136482
+		MR Head Resistance from Head 1: 281474976720089
+		MR Head Resistance from Head 2: 281483566645298
+		MR Head Resistance from Head 3: 844424930141227
+		MR Head Resistance from Head 4: 281474976710656
+		MR Head Resistance from Head 5: 281474976710656
+		MR Head Resistance from Head 6: 281474976716394
+		MR Head Resistance from Head 7: 281474976716816
+		MR Head Resistance from Head 8: 844424930136196
+		MR Head Resistance from Head 9: 281474976710656
+		MR Head Resistance from Head 10: 281474976710656
+		MR Head Resistance from Head 11: 281474976714779
+		MR Head Resistance from Head 12: 281474976710656
+		MR Head Resistance from Head 13: 281474976710656
+		MR Head Resistance from Head 14: 281474976714737
+		MR Head Resistance from Head 15: 281474976710656
+		MR Head Resistance from Head 16: 281474976715656
+		MR Head Resistance from Head 17: 281479271681307
+		Second MR Head Resistance by Head 0: 0
+		Second MR Head Resistance by Head 1: 0
+		Second MR Head Resistance by Head 2: 0
+		Second MR Head Resistance by Head 3: 0
+		Second MR Head Resistance by Head 4: 0
+		Second MR Head Resistance by Head 5: 0
+		Second MR Head Resistance by Head 6: 0
+		Second MR Head Resistance by Head 7: 0
+		Second MR Head Resistance by Head 8: 0
+		Second MR Head Resistance by Head 9: 0
+		Second MR Head Resistance by Head 10: 0
+		Second MR Head Resistance by Head 11: 0
+		Second MR Head Resistance by Head 12: 0
+		Second MR Head Resistance by Head 13: 0
+		Second MR Head Resistance by Head 14: 0
+		Second MR Head Resistance by Head 15: 0
+		Second MR Head Resistance by Head 16: 0
+		Second MR Head Resistance by Head 17: 0
+		Number of Reallocated Sectors by Head 0: 0
+		Number of Reallocated Sectors by Head 1: 0
+		Number of Reallocated Sectors by Head 2: 0
+		Number of Reallocated Sectors by Head 3: 0
+		Number of Reallocated Sectors by Head 4: 0
+		Number of Reallocated Sectors by Head 5: 0
+		Number of Reallocated Sectors by Head 6: 0
+		Number of Reallocated Sectors by Head 7: 0
+		Number of Reallocated Sectors by Head 8: 0
+		Number of Reallocated Sectors by Head 9: 0
+		Number of Reallocated Sectors by Head 10: 0
+		Number of Reallocated Sectors by Head 11: 0
+		Number of Reallocated Sectors by Head 12: 0
+		Number of Reallocated Sectors by Head 13: 0
+		Number of Reallocated Sectors by Head 14: 0
+		Number of Reallocated Sectors by Head 15: 0
+		Number of Reallocated Sectors by Head 16: 0
+		Number of Reallocated Sectors by Head 17: 0
+		Number of Reallocation Candidate Sectors by Head 0: 0
+		Number of Reallocation Candidate Sectors by Head 1: 0
+		Number of Reallocation Candidate Sectors by Head 2: 0
+		Number of Reallocation Candidate Sectors by Head 3: 0
+		Number of Reallocation Candidate Sectors by Head 4: 0
+		Number of Reallocation Candidate Sectors by Head 5: 0
+		Number of Reallocation Candidate Sectors by Head 6: 0
+		Number of Reallocation Candidate Sectors by Head 7: 0
+		Number of Reallocation Candidate Sectors by Head 8: 0
+		Number of Reallocation Candidate Sectors by Head 9: 0
+		Number of Reallocation Candidate Sectors by Head 10: 0
+		Number of Reallocation Candidate Sectors by Head 11: 0
+		Number of Reallocation Candidate Sectors by Head 12: 0
+		Number of Reallocation Candidate Sectors by Head 13: 0
+		Number of Reallocation Candidate Sectors by Head 14: 0
+		Number of Reallocation Candidate Sectors by Head 15: 0
+		Number of Reallocation Candidate Sectors by Head 16: 0
+		Number of Reallocation Candidate Sectors by Head 17: 0

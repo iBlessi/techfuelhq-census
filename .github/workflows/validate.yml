@@ -1,0 +1,27 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Prove the checks catch what they claim to
+        run: npm test
+      - name: Validate the five datasets
+        run: npm run validate
+      - name: Schemas, summaries and field tables match the definitions and the data
+        run: |
+          node scripts/schemas.mjs --check
+          node scripts/summary.mjs --check
+          node scripts/docs.mjs --check
