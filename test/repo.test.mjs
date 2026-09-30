@@ -104,6 +104,11 @@ test('the workflows read only the issue number from the event, and every action 
   assert.match(read, /permissions:\n {2}contents: read\n {2}issues: write/);
   assert.match(validate, /permissions:\n {2}contents: read\n/);
   assert.ok(read.includes(`if: ${CONDITION}`));
+  // The checkout step keeps no token behind for the scripts that run after it.
+  for (const y of [read, validate]) {
+    assert.equal((y.match(/uses: actions\/checkout@/g) || []).length, 1);
+    assert.match(y, /uses: actions\/checkout@[0-9a-f]{40} # v[\d.]+\n {8}with:\n {10}persist-credentials: false\n/);
+  }
   const respond = file('scripts', 'respond.mjs');
   assert.ok(respond.includes('execFileSync'));
   assert.ok(!/\bexecSync\b|\bexec\(/.test(respond));
@@ -121,6 +126,22 @@ test('the workflows read only the issue number from the event, and every action 
     assert.notEqual(text, read, `${what}: the fault was not planted`);
     assert.notDeepEqual(workflowFaults(text), [], what);
   }
+});
+
+test('every issue form carries the two boxes in the words the intake requires', async () => {
+  const { BOX_TEXTS } = await import('../lib/issue.js');
+  for (const id of IDS) {
+    const y = lf(file('.github', 'ISSUE_TEMPLATE', `${id}.yml`));
+    for (const text of BOX_TEXTS) assert.ok(y.includes(`- label: ${text}\n`), `${id}.yml: ${text}`);
+  }
+});
+
+test('the maintainer\'s accept script says "added" only after the rows are on disk', () => {
+  const s = file('scripts', 'accept.mjs');
+  const wrote = s.indexOf('writeText(csvPath(id)');
+  const said = s.indexOf('console.log(`added #');
+  assert.ok(wrote > 0 && said > wrote, 'the rows are written before "added" is said');
+  assert.ok(!/console\.log\(`added #[^`]*`\)[\s\S]*writeText\(csvPath/.test(s), '"added" is never said before the write');
 });
 
 test('every label the forms and the workflow use is in the list the repository is set up from', async () => {

@@ -3,7 +3,7 @@
 //   node scripts/validate.mjs post-time    one
 import { CENSUSES, IDS } from '../lib/censuses.js';
 import { validateTable } from '../lib/validate.js';
-import { readRows, todayUtc } from './common.mjs';
+import { readRows, latestToday } from './common.mjs';
 
 const wanted = process.argv.slice(2);
 const ids = wanted.length ? wanted : IDS;
@@ -24,7 +24,7 @@ for (const id of ids) {
     failed += 1;
     continue;
   }
-  const errors = validateTable(def, table.header, table.records, todayUtc());
+  const errors = validateTable(def, table.header, table.records, latestToday());
   if (errors.length) {
     failed += 1;
     console.error(`FAIL ${id}: ${errors.length} problem${errors.length === 1 ? '' : 's'}`);

@@ -7,10 +7,12 @@
 //   node scripts/site-export.mjs <path to the site checkout>
 //
 // It refuses to export from a working tree with uncommitted changes, so the commit recorded
-// in VENDOR.json always names the exact text that was copied.
-import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync } from 'node:fs';
+// in VENDOR.json always names the exact text that was copied. When the site checkout carries
+// ops/scripts/checks/census_pages_check.py, that check is run afterwards with --source pointed
+// at this checkout, which holds every copied file to this commit's file.
+import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { join, dirname, relative } from 'node:path';
 import { CENSUSES, IDS, REPO } from '../lib/censuses.js';
 import { summarize } from '../lib/stats.js';
@@ -133,3 +135,25 @@ writeFileSync(
 );
 
 console.log(`exported ${Object.keys(files).length} files, ${IDS.length} of them data files, from ${commit.slice(0, 8)}`);
+
+// The site's own check, run the one way that can see a copy and its manifest changed together:
+// against this checkout at the commit just recorded.
+const check = join(site, 'ops', 'scripts', 'checks', 'census_pages_check.py');
+if (existsSync(check)) {
+  const pythons = process.platform === 'win32'
+    ? ['C:/Techfuel/qdrant-venv/Scripts/python.exe', 'python', 'py']
+    : ['python3', 'python'];
+  let ran = false;
+  for (const python of pythons) {
+    const args = python === 'py' ? ['-3', check, '--source', ROOT] : [check, '--source', ROOT];
+    const done = spawnSync(python, args, { cwd: site, stdio: 'inherit', env: { ...process.env, PYTHONUTF8: '1' } });
+    if (done.error) continue;
+    ran = true;
+    if (done.status !== 0) {
+      console.error('The site's census check failed against this export. Nothing more to do here until it passes.');
+      process.exit(done.status || 1);
+    }
+    break;
+  }
+  if (!ran) console.error('No python found, so the site's census check was not run. Run it there: python ops/scripts/checks/census_pages_check.py --source ' + ROOT);
+}

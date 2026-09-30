@@ -29,6 +29,9 @@ export function sameOnDisk(path, text) {
   return readText(path).replace(/\r\n/g, '\n') === want;
 }
 
-export function todayUtc() {
-  return new Date().toISOString().slice(0, 10);
+// The latest date it is anywhere on Earth right now, fourteen hours ahead of UTC. A report is
+// checked against this, so that a purchase month typed at breakfast in Tokyo on the first of
+// the month is not "in the future" when it is read the evening before, in UTC.
+export function latestToday(now = new Date()) {
+  return new Date(now.getTime() + 14 * 3600 * 1000).toISOString().slice(0, 10);
 }

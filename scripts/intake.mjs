@@ -3,7 +3,7 @@
 // Prints one line of JSON: { ok, census, labels }. The issue's text is only ever parsed as data.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { readIssue, commentFor } from '../lib/intake.js';
-import { todayUtc } from './common.mjs';
+import { latestToday } from './common.mjs';
 
 const [eventPath, commentPath] = process.argv.slice(2);
 if (!eventPath || !commentPath) {
@@ -18,7 +18,7 @@ if (!issue) {
   process.exit(2);
 }
 
-const result = readIssue(issue, todayUtc());
+const result = readIssue(issue, latestToday());
 writeFileSync(commentPath, `${commentFor(result)}\n`, 'utf8');
 
 const labels = [];

@@ -8,7 +8,7 @@ import { censusOf } from '../lib/censuses.js';
 import { readIssue } from '../lib/intake.js';
 import { serializeTable } from '../lib/csv.js';
 import { validateTable } from '../lib/validate.js';
-import { csvPath, readRows, writeText, todayUtc } from './common.mjs';
+import { csvPath, readRows, writeText, latestToday } from './common.mjs';
 
 const [id, ...files] = process.argv.slice(2);
 if (!id || files.length === 0) {
@@ -28,7 +28,7 @@ for (const file of files) {
   let result;
   try {
     issue = JSON.parse(readFileSync(file, 'utf8'));
-    result = readIssue(issue, todayUtc());
+    result = readIssue(issue, latestToday());
   } catch (e) {
     refused += 1;
     console.error(`REFUSED ${file}: it could not be read as an issue`);
@@ -55,7 +55,7 @@ for (const file of files) {
 }
 
 table.records.sort((a, b) => Number(a.source_issue || 0) - Number(b.source_issue || 0));
-const errors = validateTable(def, table.header, table.records, todayUtc());
+const errors = validateTable(def, table.header, table.records, latestToday());
 if (errors.length) {
   console.error('The data would not be valid, so nothing was written:');
   for (const e of errors) console.error(`  ${e}`);
