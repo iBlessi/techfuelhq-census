@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readDrive, readSmart, readFarm, redact, vendorOf } from '../lib/readers/drive-arrival.js';
+import { readDrive, readSmart, readFarm, vendorOf } from '../lib/readers/drive-arrival.js';
 import def, { sellerKey } from '../censuses/drive-arrival/definition.js';
 import { buildRow, makeReport } from '../lib/report.js';
 import { fixture, report, TODAY } from './helpers.mjs';
@@ -12,6 +12,38 @@ const WD14 = fixture('drive-arrival', 'wd-14tb-smartctl-a.json');
 const SSD = fixture('drive-arrival', 'samsung-ssd-smartctl-x.json');
 const NVME = fixture('drive-arrival', 'intel-nvme-smartctl-a.json');
 const SAS = fixture('drive-arrival', 'seagate-sas-smartctl.json');
+
+const SERIAL = 'ZX9ABCDE';
+const WITH_SERIAL = EXOS20_A.replace('Serial Number:    [removed]', `Serial Number:    ${SERIAL}`)
+  .replace('LU WWN Device Id: [removed]', 'LU WWN Device Id: 5 000c50 0aabbccdd');
+const FARM_WITH_SERIAL = EXOS20_FARM.replace('Serial Number: [removed]', `Serial Number: ${SERIAL}`)
+  .replace('World Wide Name: [removed]', 'World Wide Name: 0x5000c500aabbccdd');
+
+// Made up, in the layout smartctl prints for a SAS drive. The empty Vendor line is what Seagate's
+// white-label recertified SAS drives report (opensvc/multipath-tools issue 56).
+const SAS_BLANK_VENDOR = [
+  'smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.8.0] (local build)',
+  '',
+  '=== START OF INFORMATION SECTION ===',
+  'Vendor:               ',
+  'Product:              OOS16000G',
+  'Revision:             OOS1',
+  'User Capacity:        16,000,900,608,000 bytes [16.0 TB]',
+  'Rotation Rate:        7200 rpm',
+  'Logical Unit id:      0x5000c500d1e2f3a4',
+  'Serial number:        ZL2ABCDE0000',
+  'Device type:          disk',
+  'Transport protocol:   SAS (SPL-4)',
+  '',
+  '=== START OF READ SMART DATA SECTION ===',
+  'SMART Health Status: OK',
+  'Accumulated start-stop cycles:  61',
+  'Elements in grown defect list: 0',
+  '  Accumulated power on time, hours:minutes 31204:17',
+  '',
+].join('\n');
+
+const everyValue = (machine) => Object.values(machine).join(' ');
 
 test('Seagate Exos 20 TB: smartctl -a text and the FARM log, two boxes', () => {
   const { machine } = readDrive(EXOS20_A, EXOS20_FARM);
@@ -34,7 +66,7 @@ test('Seagate Exos 20 TB: smartctl -a text and the FARM log, two boxes', () => {
     farm_spindle_poh: '940',
     farm_head_flight_hours: '198',
     farm_power_cycles: '5',
-    farm_assembly_yyww: '2264',
+    farm_assembly_printed: '2264',
     poh_gap_h: '0',
   });
 });
@@ -52,12 +84,12 @@ test('Seagate Exos 24 TB: smartctl -x brief table with the FARM log in the same 
   assert.equal(machine.farm_spindle_poh, '437');
   assert.equal(machine.farm_head_flight_hours, '437');
   assert.equal(machine.farm_power_cycles, '10');
-  assert.equal(machine.farm_assembly_yyww, '4232');
+  assert.equal(machine.farm_assembly_printed, '4232');
   assert.equal(machine.poh_gap_h, '0');
 });
 
 test('raw values with text after the number are read by their leading number', () => {
-  const smart = readSmart(EXOS20_A.replace(/(  9 Power_On_Hours .* )940$/m, '$112345h+12m+34.567s'));
+  const { smart } = readSmart(EXOS20_A.replace(/(  9 Power_On_Hours .* )940$/m, '$112345h+12m+34.567s'));
   assert.equal(smart.smart_poh, '12345');
 });
 
@@ -75,6 +107,13 @@ test('Western Digital 14 TB in JSON: no FARM log exists, and the row says so', (
   assert.equal(machine.poh_gap_h, '');
 });
 
+test('JSON is read with a prompt line around it, a byte order mark, or a second document after it', () => {
+  const plain = readDrive(WD14, '').machine;
+  assert.deepEqual(readDrive(`﻿${WD14}`, '').machine, plain);
+  assert.deepEqual(readDrive(`root@nas:~# smartctl -a -j /dev/sda\n${WD14}\nroot@nas:~# `, '').machine, plain);
+  assert.deepEqual(readDrive(`${WD14}\n{"smartctl":{"version":[7,0]},"seagate_farm_log":{"supported":false}}`, '').machine, plain);
+});
+
 test('a Seagate SAS drive in JSON: hours and grown defects, FARM not pasted', () => {
   const { machine } = readDrive(SAS, '');
   assert.equal(machine.drive_vendor, 'seagate');
@@ -85,17 +124,65 @@ test('a Seagate SAS drive in JSON: hours and grown defects, FARM not pasted', ()
   assert.equal(machine.farm, 'not-provided');
 });
 
-test('what smartctl prints when a drive keeps no FARM log', () => {
-  assert.deepEqual(readFarm('FARM log (GP Log 0xa6) not supported\n'), { farm: 'not-supported' });
-  assert.deepEqual(readFarm('FARM log (GP Log 0xa6) not supported for non-Seagate drives\n'), { farm: 'not-supported' });
-  assert.deepEqual(readFarm(''), { farm: 'not-provided' });
-  assert.throws(() => readFarm('some other text'), /cannot find a FARM log/);
+test('a SAS drive whose FARM log is in JSON, under the names smartctl uses for SAS', () => {
+  // Key names from scsiPrintFarmLog in smartmontools' farmprint.cpp; the values are made up.
+  const farm = JSON.stringify({ smartctl: { version: [7, 4] }, seagate_farm_log: { drive_information: { power_on_hour: 61204, power_cycle_count: 88, date_of_assembled: '1912' } } });
+  const { machine } = readDrive(SAS, farm);
+  assert.equal(machine.farm, 'read');
+  assert.equal(machine.farm_poh, '61204');
+  assert.equal(machine.farm_power_cycles, '88');
+  assert.equal(machine.farm_assembly_printed, '1912');
+  assert.equal(machine.poh_gap_h, String(61204 - 43549));
+});
+
+test('a SAS drive with an empty Vendor line: the model is the product, and nothing else', () => {
+  const { machine } = readDrive(SAS_BLANK_VENDOR, '');
+  assert.equal(machine.model, 'OOS16000G');
+  assert.equal(machine.interface, 'sas');
+  assert.equal(machine.drive_vendor, 'seagate');
+  assert.equal(machine.capacity_tb, '16.00');
+  assert.equal(machine.smart_poh, '31204');
+  assert.equal(machine.smart_power_cycles, '61');
+  assert.ok(!/ZL2ABCDE|d1e2f3a4|Product/i.test(everyValue(machine)));
+});
+
+test('what smartctl prints when it has no FARM log to show', () => {
+  const seagate = { seagate: true, listed: true };
+  const rebranded = { seagate: true, listed: false };
+  const other = { seagate: false, listed: false };
+  assert.deepEqual(readFarm('FARM log (GP Log 0xa6) not supported\n', seagate), { farm: 'not-supported' });
+  assert.deepEqual(readFarm('FARM log (GP Log 0xa6) not supported for non-Seagate drives\n', other), { farm: 'not-supported' });
+  // A rebranded Seagate drive keeps the log and smartctl never asks it.
+  const asked = readFarm('FARM log (GP Log 0xa6) not supported for non-Seagate drives\n(override with \'-T permissive\' option)\n', rebranded);
+  assert.equal(asked.farm, 'not-provided');
+  assert.match(asked.note, /did not ask this drive/);
+  const hinted = readFarm('Seagate FARM log (GP Log 0xa6) supported [try: -l farm]\n', seagate);
+  assert.equal(hinted.farm, 'not-provided');
+  assert.match(hinted.note, /smartctl -l farm/);
+  assert.deepEqual(readFarm('', seagate), { farm: 'not-provided' });
+  assert.equal(readFarm('some other text', seagate), null);
+  assert.throws(() => readDrive(EXOS20_A, 'some other text'), /cannot find a FARM log/);
+});
+
+test('a rebranded Seagate drive is a Seagate drive, and its unread log is recorded as not read', () => {
+  // The model and the refusal are the ones in smartmontools issue 320.
+  const oos = WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:     OOS6000G');
+  const out = readDrive(oos, 'FARM log (GP Log 0xa6) not supported for non-Seagate drives\n(override with \'-T permissive\' option)\n');
+  assert.equal(out.machine.model, 'OOS6000G');
+  assert.equal(out.machine.drive_vendor, 'seagate');
+  assert.equal(out.machine.farm, 'not-provided');
+  assert.match(out.note, /did not ask this drive/);
+  // With a model nobody knows, the maker still comes from the world wide name, and only the maker.
+  const unknown = readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:     XYZ123 NEW'), '');
+  assert.equal(unknown.machine.drive_vendor, 'seagate');
+  assert.ok(!/aabbccdd/i.test(everyValue(unknown.machine)));
 });
 
 test('FARM in JSON, with the key names smartctl writes', () => {
   const json = JSON.stringify({ seagate_farm_log: { supported: true, page_1_drive_information: { poh: 31204, spoh: 31100, head_flight_hours: 30990, power_cycle_count: 41, date_of_assembly: '2119' } } });
-  assert.deepEqual(readFarm(json), { farm: 'read', farm_poh: '31204', farm_spindle_poh: '31100', farm_head_flight_hours: '30990', farm_power_cycles: '41', farm_assembly_yyww: '2119' });
+  assert.deepEqual(readFarm(json), { farm: 'read', farm_poh: '31204', farm_spindle_poh: '31100', farm_head_flight_hours: '30990', farm_power_cycles: '41', farm_assembly_printed: '2119' });
   assert.deepEqual(readFarm(JSON.stringify({ seagate_farm_log: { supported: false } })), { farm: 'not-supported' });
+  assert.equal(readFarm(JSON.stringify({ seagate_farm_log: { supported: true } })).farm, 'not-provided');
 });
 
 test('a drive whose FARM hours are far above its SMART hours', () => {
@@ -112,40 +199,84 @@ test('solid state and NVMe drives are refused with the reason', () => {
   assert.throws(() => readSmart(EXOS20_A.replace('Rotation Rate:    7200 rpm', 'Rotation Rate:    Solid State Device')), /solid state drive/);
 });
 
+test('a drive that gives no sign of platters is refused, and an old hard drive is not', () => {
+  // No rotation rate line, and the attributes a solid state drive reports.
+  const noRate = EXOS20_A.replace(/^Rotation Rate:.*\n/m, '');
+  assert.notEqual(noRate, EXOS20_A);
+  // The Exos still reports spin-up time, so it is read as the hard drive it is.
+  assert.equal(readSmart(noRate).smart.smart_poh, '940');
+  const noPlatters = noRate.split('\n').filter((l) => !/^\s*(3|7|10)\s+\S+/.test(l)).join('\n');
+  assert.throws(() => readSmart(noPlatters), /cannot tell whether this is a hard drive/);
+  const json = JSON.parse(WD14);
+  delete json.rotation_rate;
+  json.ata_smart_attributes.table = json.ata_smart_attributes.table.filter((a) => ![3, 7, 10].includes(a.id));
+  assert.throws(() => readSmart(JSON.stringify(json)), /cannot tell whether this is a hard drive/);
+});
+
 test('incomplete pastes say what is missing', () => {
   assert.throws(() => readSmart(''), /Nothing is pasted/);
   assert.throws(() => readSmart('smartctl 7.4\n'), /cannot find the drive's model/);
   assert.throws(() => readSmart(EXOS20_A.split('ID# ATTRIBUTE_NAME')[0]), /cannot find the attribute table/);
   assert.throws(() => readSmart(WD14.slice(0, 300)), /cut off/);
+  // Cut inside the table, where the end of a number may be missing.
+  const at = EXOS20_A.indexOf('Power_On_Hours');
+  const lineEnd = EXOS20_A.indexOf('\n', at);
+  assert.throws(() => readSmart(EXOS20_A.slice(0, lineEnd - 2)), /stops inside the attribute table/);
+});
+
+test('two drives in one paste are refused', () => {
+  const second = WITH_SERIAL.replace(SERIAL, 'ZX9ZZZZZ').replace(/(  9 Power_On_Hours .* )940$/m, '$131204');
+  assert.throws(() => readDrive(`${WITH_SERIAL}\n${second}`, ''), /more than one run of smartctl, or more than one drive/);
+  // The first drive's output cut short, then a second drive: one information section is gone, the serials differ.
+  const cut = WITH_SERIAL.split('=== START OF READ SMART DATA SECTION ===')[0].replace('=== START OF INFORMATION SECTION ===', '');
+  assert.throws(() => readDrive(`${cut}\n${second}`, ''), /more than one/);
+  // A FARM log from another drive.
+  assert.throws(() => readDrive(WITH_SERIAL, FARM_WITH_SERIAL.replace(SERIAL, 'ZX9ZZZZZ')), /more than one/);
 });
 
 test('serial numbers and world wide names never reach a report', () => {
-  const withSerial = EXOS20_A.replace('Serial Number:    [removed]', 'Serial Number:    ZX9ABCDE')
-    .replace('LU WWN Device Id: [removed]', 'LU WWN Device Id: 5 000c50 0aabbccdd');
-  const farm = EXOS20_FARM.replace('Serial Number: [removed]', 'Serial Number: ZX9ABCDE')
-    .replace('World Wide Name: [removed]', 'World Wide Name: 0x5000c500aabbccdd');
-  const { machine } = readDrive(withSerial, farm);
+  const { machine } = readDrive(WITH_SERIAL, FARM_WITH_SERIAL);
   const rep = JSON.stringify(makeReport(def, { ...machine, seller: 'ServerPartDeals', listing_condition: 'manufacturer-recertified', purchase_month: '2026-08', arrived: 'working', first_test: 'none' }));
   assert.ok(!/ZX9ABCDE|aabbccdd/i.test(rep));
-  const shown = redact(`${withSerial}\n${farm}\n{"serial_number": "ZX9ABCDE", "world_wide_name": "0x5000c500aabbccdd"}`);
-  assert.ok(!/ZX9ABCDE|aabbccdd/i.test(shown));
-  assert.match(shown, /Serial Number:\s+\[removed\]/);
+  // In JSON, where the same things have other names.
+  const json = JSON.parse(WD14);
+  json.serial_number = 'WD-9ABCDEFG';
+  json.wwn = { naa: 5, oui: 5358, id: 11259375 };
+  const fromJson = readDrive(JSON.stringify(json), '').machine;
+  assert.ok(!/9ABCDEFG|abcdef/i.test(everyValue(fromJson)));
 });
 
-test('drive makers from model names', () => {
+test('a paste edited so that a serial number sits where the model belongs is refused', () => {
+  // An empty model label: the next line is the serial number, and it is not read in its place.
+  assert.throws(() => readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:'), ''), /cannot find the drive's model/);
+  // The serial number typed in as the model.
+  assert.throws(() => readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, `Device Model:     ${SERIAL}`), ''), /a serial number would have ended up in the report/);
+  assert.throws(() => readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, `Device Model:     Serial Number: ${SERIAL}`), ''), /a serial number would have ended up in the report/);
+});
+
+test('drive makers from model names, and from the maker part of a world wide name', () => {
   assert.equal(vendorOf('ST16000NM001G-2KK103', 'Seagate Exos X16'), 'seagate');
+  assert.equal(vendorOf('OOS6000G', ''), 'seagate');
   assert.equal(vendorOf('WDC WD140EDFZ-11A0VA0', ''), 'wd');
   assert.equal(vendorOf('WDC  WUH721816ALE6L4', 'Western Digital Ultrastar DC HC550'), 'wd');
   assert.equal(vendorOf('HGST HUH721212ALE604', ''), 'hgst');
   assert.equal(vendorOf('TOSHIBA MG08ACA16TE', ''), 'toshiba');
   assert.equal(vendorOf('SomethingElse 123', ''), 'other');
+  assert.equal(vendorOf('SomethingElse 123', '', '000c50'), 'seagate');
+  assert.equal(vendorOf('SomethingElse 123', '', '0014EE'), 'wd');
+  assert.equal(vendorOf('SomethingElse 123', '', 'ffffff'), 'other');
 });
 
-test('seller names group whatever their spacing and case', () => {
+test('seller names group whatever their spacing, case or script', () => {
   assert.equal(sellerKey('ServerPartDeals'), 'serverpartdeals');
   assert.equal(sellerKey('Server Part Deals'), 'serverpartdeals');
   assert.equal(sellerKey('goHardDrive.com'), 'goharddrivecom');
+  assert.equal(sellerKey('ヨドバシ カメラ'), 'ヨドバシカメラ');
+  assert.equal(sellerKey('Ситилинк'), 'ситилинк');
+  assert.equal(sellerKey('???'), '');
   assert.equal(def.publish.group({ seller: 'Server Part Deals', listing_condition: 'used' }), 'serverpartdeals/used');
+  const r = buildRow(def, report('drive-arrival', { seller: 'ヨドバシカメラ' }), { submitted_date: TODAY }, TODAY);
+  assert.deepEqual(r.errors, []);
 });
 
 test('planted faults in a report are each caught', () => {
@@ -158,9 +289,9 @@ test('planted faults in a report are each caught', () => {
   assert.equal(ok.row.poh_gap_h, '0');
   caught({ farm: 'not-supported' }, /farm_poh is set and farm is not-supported/);
   caught({ farm_poh: undefined }, /farm is read and farm_poh is empty/);
-  caught({ poh_gap_h: '5' }, /the report says 5 and its values give 0/);
+  caught({ poh_gap_h: '5' }, /the report says "5" and its values give 0/);
   caught({ smart_poh: '-1' }, /below 0/);
-  caught({ farm_assembly_yyww: '22w4' }, /does not match/);
+  caught({ farm_assembly_printed: '22w4' }, /does not match/);
   caught({ purchase_month: '2026-13' }, /not a month/);
   caught({ seller: '???' }, /no letters or digits/);
   caught({ listing_condition: 'like-new' }, /not one of/);

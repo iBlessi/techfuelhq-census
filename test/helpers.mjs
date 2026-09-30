@@ -19,14 +19,14 @@ export const GOOD = {
     peak_pin_a: '8.56', peak_total_a: '48.26', min_v: '11.944',
   },
   'oled-burn-in': {
-    monitor_brand: 'Gigabyte', monitor_model: 'AORUS FO48U', panel_type: 'woled', size_in: '48',
+    monitor_brand: 'Example', monitor_model: 'EX48OLED', panel_type: 'woled', size_in: '48',
     purchase_month: '2021-09', months_in_use: '60', use_mix: 'mixed', care_cycles: 'as-prompted',
     severity: '0', location: 'none', warranty_claim: 'none',
   },
   'post-time': {
     os: 'windows', platform: 'am5', cpu: 'AMD Ryzen 7 7800X3D 8-Core Processor',
     board_vendor: 'ASUSTeK COMPUTER INC.', board: 'ROG STRIX B650-A GAMING WIFI', bios_version: '3881',
-    bios_date: '2026-06-16', dimms: '1', ram_gb: '32', ram_speed: '6000', memory_fast_boot: 'unknown',
+    bios_date: '2026-06-17', dimms: '1', ram_gb: '32', ram_speed: '6000', memory_fast_boot: 'unknown',
     boot_kind: 'cold-boot', fast_startup: 'off', fw_post_ms: '63981', os_build: '26200',
   },
   'drive-arrival': {
@@ -34,7 +34,7 @@ export const GOOD = {
     drive_vendor: 'seagate', model: 'ST20000NM007D-3DJ103', capacity_tb: '20.00', interface: 'sata',
     smartctl_version: '7.4', smart_poh: '940', smart_power_cycles: '4', reallocated: '0', pending: '0',
     offline_uncorrectable: '0', crc_errors: '0', load_cycles: '1007', farm: 'read', farm_poh: '940',
-    farm_spindle_poh: '940', farm_head_flight_hours: '198', farm_power_cycles: '5', farm_assembly_yyww: '2264',
+    farm_spindle_poh: '940', farm_head_flight_hours: '198', farm_power_cycles: '5', farm_assembly_printed: '2264',
     arrived: 'working', first_test: 'long-smart',
   },
   'windows-memory': {

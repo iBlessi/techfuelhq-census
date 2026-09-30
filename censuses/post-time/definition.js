@@ -4,8 +4,10 @@ import { fixed } from '../../lib/validate.js';
 import { median, range, countBy } from '../../lib/stats.js';
 
 // Printed by Windows PowerShell 5.1 and later. Reads the registry and WMI; writes nothing;
-// carries no serial number, host name or user name.
-export const WINDOWS_COMMAND = "$p=Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power';$o=Get-CimInstance Win32_OperatingSystem;$b=Get-CimInstance Win32_BaseBoard;$f=Get-CimInstance Win32_BIOS;$c=Get-CimInstance Win32_Processor|Select-Object -First 1;$d=@(Get-CimInstance Win32_PhysicalMemory);[ordered]@{census='post-time';v=1;os='windows';fw_post_ms=[int]$p.FwPOSTTime;fast_startup=[int]$p.HiberbootEnabled;board_vendor=$b.Manufacturer;board=$b.Product;bios_version=$f.SMBIOSBIOSVersion;bios_date=$f.ReleaseDate.ToString('yyyy-MM-dd');cpu=$c.Name.Trim();dimms=$d.Count;ram_gb=[int](($d|Measure-Object Capacity -Sum).Sum/1GB);ram_speed=[int]($d|Select-Object -First 1).ConfiguredClockSpeed;os_build=$o.BuildNumber}|ConvertTo-Json -Compress";
+// carries no serial number, host name or user name. The BIOS date is read in universal time,
+// because Windows holds it as midnight UTC and a clock west of Greenwich would print the day
+// before. fast_startup is -1 where Windows holds no value for it.
+export const WINDOWS_COMMAND = "$p=Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power';$o=Get-CimInstance Win32_OperatingSystem;$b=Get-CimInstance Win32_BaseBoard;$f=Get-CimInstance Win32_BIOS;$c=Get-CimInstance Win32_Processor|Select-Object -First 1;$d=@(Get-CimInstance Win32_PhysicalMemory);[ordered]@{census='post-time';v=1;os='windows';fw_post_ms=[int]$p.FwPOSTTime;fast_startup=$(if($null -eq $p.HiberbootEnabled){-1}else{[int]$p.HiberbootEnabled});board_vendor=$b.Manufacturer;board=$b.Product;bios_version=$f.SMBIOSBIOSVersion;bios_date=$(if($f.ReleaseDate){$f.ReleaseDate.ToUniversalTime().ToString('yyyy-MM-dd')}else{''});cpu=$c.Name.Trim();dimms=$d.Count;ram_gb=[int](($d|Measure-Object Capacity -Sum).Sum/1GB);ram_speed=[int]($d|Select-Object -First 1).ConfiguredClockSpeed;os_build=$o.BuildNumber}|ConvertTo-Json -Compress";
 
 export const LINUX_COMMAND = 'systemd-analyze';
 

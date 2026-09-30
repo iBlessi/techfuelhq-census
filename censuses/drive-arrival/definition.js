@@ -5,8 +5,10 @@ import { median } from '../../lib/stats.js';
 
 export const GAP_FLAG_H = 24; // FARM hours beyond SMART hours by more than a day
 
+// One key for a seller however its name was typed: the letters and digits of any script, in
+// lower case.
 export function sellerKey(seller) {
-  return String(seller).toLowerCase().replace(/[^a-z0-9]+/g, '');
+  return String(seller).normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
 }
 
 export function derive(row) {
@@ -27,7 +29,7 @@ const CONDITION_LABELS = {
   'open-box': 'Sold as open box',
 };
 
-const FARM_FIELDS = ['farm_poh', 'farm_spindle_poh', 'farm_head_flight_hours', 'farm_power_cycles', 'farm_assembly_yyww'];
+const FARM_FIELDS = ['farm_poh', 'farm_spindle_poh', 'farm_head_flight_hours', 'farm_power_cycles', 'farm_assembly_printed'];
 
 const definition = {
   id: 'drive-arrival',
@@ -58,13 +60,16 @@ const definition = {
     {
       name: 'farm', type: 'enum', required: true, from: 'machine', label: 'Seagate FARM log',
       values: ['read', 'not-supported', 'not-provided'],
-      labels: { read: 'Read', 'not-supported': 'The drive does not keep one', 'not-provided': 'Not pasted' },
+      labels: { read: 'Read', 'not-supported': 'The drive does not keep one', 'not-provided': 'Not read' },
     },
     { name: 'farm_poh', type: 'integer', min: 0, max: 200000, from: 'machine', label: 'Power-on hours, FARM' },
     { name: 'farm_spindle_poh', type: 'integer', min: 0, max: 200000, from: 'machine', label: 'Spindle power-on hours, FARM' },
     { name: 'farm_head_flight_hours', type: 'integer', min: 0, max: 200000, from: 'machine', label: 'Head flight hours, FARM' },
     { name: 'farm_power_cycles', type: 'integer', min: 0, max: 10000000, from: 'machine', label: 'Power cycles, FARM' },
-    { name: 'farm_assembly_yyww', type: 'string', pattern: '^[0-9]{4}$', from: 'machine', label: 'Assembly date as FARM prints it' },
+    {
+      name: 'farm_assembly_printed', type: 'string', pattern: '^[0-9]{4}$', from: 'machine', label: 'Assembly date, as smartctl printed it',
+      help: 'Four digits, kept as printed. smartctl labels them year and week. On the two Seagate drives in the test data each pair arrives with its digits swapped, so 2264 reads as week 46 of 2022.',
+    },
     { name: 'poh_gap_h', type: 'integer', min: -200000, max: 200000, from: 'derived', label: 'FARM hours minus SMART hours' },
     {
       name: 'arrived', type: 'enum', required: true, from: 'human', label: 'How it arrived',

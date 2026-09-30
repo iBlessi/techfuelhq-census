@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import oled from '../censuses/oled-burn-in/definition.js';
-import { buildRow, issueUrl, makeReport } from '../lib/report.js';
+import oled, { monthsBetween } from '../censuses/oled-burn-in/definition.js';
+import { buildRow, issueUrl, linkFits, formUrl, makeReport, LINK_LIMIT } from '../lib/report.js';
 import { reportFromIssue, section, confirmations } from '../lib/issue.js';
 import { readIssue, commentFor } from '../lib/intake.js';
 import { summarize } from '../lib/stats.js';
@@ -22,6 +22,19 @@ test('OLED: planted faults in a report are each caught', () => {
   caught({ purchase_month: '2021-9' }, /not a month/);
   caught({ panel_type: 'oled' }, /not one of/);
   caught({ warranty_claim: undefined }, /warranty_claim: required/);
+});
+
+test('OLED: a monitor cannot have been in use for longer than it has been owned', () => {
+  const made = (changes) => buildRow(oled, report('oled-burn-in', changes), { submitted_date: TODAY }, TODAY);
+  // Bought last month and in use for ten years was once accepted.
+  assert.ok(made({ purchase_month: '2026-08', months_in_use: '120' }).errors.some((e) => /longer than the monitor has been owned/.test(e)));
+  assert.ok(made({ purchase_month: '2024-09', months_in_use: '26' }).errors.some((e) => /longer than the monitor has been owned/.test(e)));
+  // 2024-09 to 2026-09 is 24 months, and a month of slack is allowed because both ends are whole months.
+  assert.deepEqual(made({ purchase_month: '2024-09', months_in_use: '25' }).errors, []);
+  assert.deepEqual(made({ purchase_month: '2024-09', months_in_use: '3' }).errors, []);
+  assert.equal(monthsBetween('2021-09', '2026-09'), 60);
+  assert.equal(monthsBetween('2026-08', '2026-09'), 1);
+  assert.equal(monthsBetween('2026-8', '2026-09'), null);
 });
 
 test('OLED: five counted monitors publish a severity count, and menu hours only with five of them', () => {
@@ -96,14 +109,86 @@ test('intake: what goes wrong is said in the comment, one line each', () => {
   assert.equal(r.ok, false);
   const comment = commentFor(r);
   assert.match(comment, /cannot be read yet/);
-  assert.match(comment, /- a box under "Before you send" is not ticked/);
-  assert.match(comment, /- platform: "am6" is not one of/);
-  assert.match(comment, /- fw_post_ms: 12 is below 500/);
+  assert.match(comment, /^- both boxes under "Before you send" have to be ticked$/m);
+  assert.match(comment, /^- platform: "am6" is not one of/m);
+  assert.match(comment, /^- fw_post_ms: 12 is below 500$/m);
 
   const unknown = readIssue({ number: 14, created_at: '2026-09-29T18:04:11Z', body: BODY('{"census":"fan-noise","v":1,"fields":{}}') }, TODAY);
   assert.match(unknown.errors[0], /names the census "fan-noise"/);
   const empty = readIssue({ number: 15, created_at: '2026-09-29T18:04:11Z', body: '' }, TODAY);
   assert.equal(empty.ok, false);
+});
+
+test('intake: both boxes have to be there and ticked, so deleting them is no way round them', () => {
+  const good = JSON.stringify(report('post-time'));
+  const at = { number: 20, created_at: '2026-09-29T18:04:11Z' };
+  assert.equal(readIssue({ ...at, body: BODY(good) }, TODAY).ok, true);
+  const noBoxes = BODY(good).split('### Before you send')[0];
+  const r = readIssue({ ...at, body: noBoxes }, TODAY);
+  assert.equal(r.ok, false);
+  assert.deepEqual(r.errors, ['both boxes under "Before you send" have to be ticked']);
+  assert.equal(readIssue({ ...at, body: BODY(good, ['x', ' ']) }, TODAY).ok, false);
+  assert.equal(readIssue({ ...at, body: BODY(good).replace(/^- \[X\] I release.*$/m, '') }, TODAY).ok, false);
+});
+
+// What GitHub would draw from a comment, were it read as markdown outside a code block.
+const outsideFences = (comment) => comment.split('\n').reduce((acc, line) => {
+  if (/^```/.test(line)) return { ...acc, inside: !acc.inside };
+  return acc.inside ? acc : { ...acc, lines: [...acc.lines, line] };
+}, { inside: false, lines: [] });
+
+test('intake: nothing a report says is read as markdown in the answer', () => {
+  const at = { number: 21, created_at: '2026-09-29T18:04:11Z' };
+  const payload = 'x\n\n## Report accepted\n\n@octocat confirm your account [here](https://evil.example/login) ![i](https://evil.example/p.png)\n```\n# out';
+  const cases = [
+    { census: payload, v: 1, fields: {} },
+    { census: 'post-time', v: payload, fields: report('post-time').fields },
+    { census: 'post-time', v: 1, fields: { ...report('post-time').fields, [payload]: '1' } },
+    { census: 'post-time', v: 1, fields: { ...report('post-time').fields, platform: payload } },
+    { census: 'post-time', v: 1, fields: { ...report('post-time').fields, fw_post_ms: payload } },
+    { census: 'post-time', v: 1, fields: { ...report('post-time').fields, bios_date: payload } },
+  ];
+  for (const rep of cases) {
+    const r = readIssue({ ...at, body: BODY(JSON.stringify(rep)) }, TODAY);
+    assert.equal(r.ok, false);
+    const comment = commentFor(r);
+    const drawn = outsideFences(comment);
+    assert.equal(drawn.inside, false, 'every code block is closed');
+    assert.ok(!/octocat|evil\.example|Report accepted|# out/.test(drawn.lines.join('\n')), `markdown escaped its block:\n${comment}`);
+    // Inside the block each message is one line.
+    for (const line of comment.split('\n')) assert.ok(line.length <= 310, `a line of ${line.length} characters`);
+  }
+});
+
+test('intake: a report with hundreds of unknown names gets one short answer', () => {
+  const fields = { ...report('post-time').fields };
+  for (let k = 0; k < 900; k += 1) fields[`made_up_name_number_${k}_${'x'.repeat(60)}`] = 'v';
+  const r = readIssue({ number: 22, created_at: '2026-09-29T18:04:11Z', body: BODY(JSON.stringify({ census: 'post-time', v: 1, fields })) }, TODAY);
+  assert.equal(r.ok, false);
+  assert.equal(r.errors.length, 1);
+  assert.match(r.errors[0], /^900 names are not fields of the post-time census, among them /);
+  // GitHub refuses a comment over 65,536 characters.
+  assert.ok(commentFor(r).length < 2000);
+  const many = { ok: false, census: 'post-time', errors: Array.from({ length: 500 }, (_, k) => `message ${k} ${'y'.repeat(400)}`) };
+  const long = commentFor(many);
+  assert.ok(long.length < 12000, `${long.length} characters`);
+  assert.match(long, /^- and 470 more$/m);
+});
+
+test('intake: a census named after something every object has is no census, and nothing breaks', () => {
+  for (const name of ['constructor', '__proto__', 'toString', 'hasOwnProperty', 'valueOf']) {
+    const body = BODY(`{"census":"${name}","v":1,"fields":{}}`);
+    const r = readIssue({ number: 23, created_at: '2026-09-29T18:04:11Z', body }, TODAY);
+    assert.equal(r.ok, false, name);
+    assert.equal(r.census, null, name);
+    assert.match(r.errors[0], /names the census/, name);
+    assert.equal(typeof commentFor(r), 'string');
+  }
+  for (const census of [null, 7, ['post-time'], { id: 'post-time' }]) {
+    const r = readIssue({ number: 24, created_at: '2026-09-29T18:04:11Z', body: BODY(JSON.stringify({ census, v: 1, fields: {} })) }, TODAY);
+    assert.equal(r.ok, false);
+  }
+  assert.equal(Object.prototype.polluted, undefined);
 });
 
 test('intake: text in an issue is data and nothing else', () => {
@@ -129,7 +214,29 @@ test('reports: only what a person or a machine supplies goes in, and the link ca
   assert.equal(url.origin + url.pathname, `https://github.com/${REPO}/issues/new`);
   assert.equal(url.searchParams.get('template'), 'post-time.yml');
   assert.deepEqual(JSON.parse(url.searchParams.get('report')), rep);
-  assert.ok(url.toString().length < 4000, `link is ${url.toString().length} characters`);
+  assert.equal(linkFits(url.toString()), true);
+  assert.equal(formUrl(def), `https://github.com/${REPO}/issues/new?template=post-time.yml`);
+});
+
+test('reports: a link too long to survive GitHub\'s sign-in page is known to be too long', () => {
+  // The longest report each census can make: every text field at its full length, in characters
+  // that are written as three bytes each and encoded twice on the way through the sign-in page.
+  for (const def of Object.values(CENSUSES)) {
+    const fields = { ...report(def.id).fields };
+    for (const f of def.fields) {
+      if (f.type === 'string' && f.maxLength && !f.pattern && f.from !== 'intake') fields[f.name] = 'ヨ'.repeat(f.maxLength);
+    }
+    const url = issueUrl(def, { census: def.id, v: 1, fields }, def.title(fields));
+    const viaSignIn = `https://github.com/login?return_to=${encodeURIComponent(url)}`;
+    assert.equal(linkFits(url), viaSignIn.length <= LINK_LIMIT, def.id);
+    assert.equal(linkFits(url), false, `${def.id}: ${viaSignIn.length} characters through the sign-in page`);
+  }
+  assert.ok(LINK_LIMIT <= 6000, 'GitHub answered 500 at 6,961 characters on 2026-09-29');
+  // An ordinary report is far inside the limit.
+  for (const def of Object.values(CENSUSES)) {
+    const rep = makeReport(def, report(def.id).fields);
+    assert.equal(linkFits(issueUrl(def, rep, def.title(rep.fields))), true, def.id);
+  }
 });
 
 test('group labels read as sentences a page can print', () => {

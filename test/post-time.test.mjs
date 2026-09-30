@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readWindows, readSystemdAnalyze, spanToMs, suggestPlatform } from '../lib/readers/post-time.js';
-import def from '../censuses/post-time/definition.js';
+import def, { WINDOWS_COMMAND } from '../censuses/post-time/definition.js';
 import { buildRow, makeReport } from '../lib/report.js';
 import { fixture, report, TODAY } from './helpers.mjs';
 
@@ -15,7 +15,8 @@ test('the command\'s real output from a Ryzen 7 7800X3D on a B650 board', () => 
     board_vendor: 'ASUSTeK COMPUTER INC.',
     board: 'ROG STRIX B650-A GAMING WIFI',
     bios_version: '3881',
-    bios_date: '2026-06-16',
+    // The firmware gives 06/17/2026. Read in local time west of Greenwich it printed as the 16th.
+    bios_date: '2026-06-17',
     dimms: '1',
     ram_gb: '32',
     ram_speed: '6000',
@@ -31,12 +32,28 @@ test('the output with a prompt line above it, wrapped by the terminal, still rea
   assert.equal(readWindows(wrapped).machine.fw_post_ms, '63981');
 });
 
+test('the whole console block, with the command echoed above its output, still reads', () => {
+  // The command holds braces of its own, and the first of them does not open the output.
+  const block = `PS C:\\Users\\me> ${WINDOWS_COMMAND}\r\n${RIG.trim()}\r\nPS C:\\Users\\me> `;
+  assert.ok(block.indexOf('{') < block.indexOf('{"census"'));
+  assert.equal(readWindows(block).machine.fw_post_ms, '63981');
+  assert.equal(readWindows(block).machine.bios_date, '2026-06-17');
+});
+
+test('a machine where Windows holds no Fast Startup value is recorded as not reported', () => {
+  assert.equal(readWindows(RIG.replace('"fast_startup":0', '"fast_startup":-1')).machine.fast_startup, 'unknown');
+  assert.equal(readWindows(RIG.replace('"fast_startup":0', '"fast_startup":1')).machine.fast_startup, 'on');
+  assert.equal(readWindows(RIG.replace('"bios_date":"2026-06-17"', '"bios_date":""')).machine.bios_date, '');
+});
+
 test('output for another census, a cut-off line and a machine with no firmware time say so', () => {
   assert.throws(() => readWindows('{"census":"windows-memory","v":1}'), /for the windows-memory census/);
   assert.throws(() => readWindows(RIG.slice(0, 120)), /cut off/);
   assert.throws(() => readWindows('no braces here'), /cannot find the output/);
   assert.throws(() => readWindows(RIG.replace('"fw_post_ms":63981', '"fw_post_ms":0')), /did not record a firmware time/);
-  assert.throws(() => readWindows(RIG.replace('"v":1', '"v":2')), /format 2/);
+  assert.throws(() => readWindows(RIG.replace('"v":1', '"v":2')), /This page reads format 1/);
+  // What the output said is never repeated back where it could be read as something else.
+  assert.throws(() => readWindows('{"census":"<img src=x onerror=alert(1)>","v":1}'), (e) => !/img|onerror/.test(e.message));
 });
 
 test('systemd time spans, in the units systemd writes', () => {
@@ -44,7 +61,15 @@ test('systemd time spans, in the units systemd writes', () => {
   assert.equal(spanToMs('534ms'), 534);
   assert.equal(spanToMs('1min 9.608s'), 69608);
   assert.equal(spanToMs('1h 2min 3s'), 3723000);
-  assert.throws(() => spanToMs('soon'), /cannot read the time/);
+  assert.throws(() => spanToMs('soon'), /cannot read the firmware time/);
+});
+
+test('a time span with a part the reader does not know is refused whole, never read short', () => {
+  // "1d 900ms" once read as 900 ms, and "17,412s" as 412 s.
+  for (const span of ['1d 900ms', '17,412s', '2w 3s', '12.004 s', '1min2s', '5s extra', '']) {
+    assert.throws(() => spanToMs(span), /cannot read the firmware time/, span);
+  }
+  assert.throws(() => readSystemdAnalyze('Startup finished in 1d 900ms (firmware) + 2s (loader) = 3s'), /cannot read the firmware time/);
 });
 
 test('systemd-analyze: a line with a firmware time, in the layout its source builds', () => {

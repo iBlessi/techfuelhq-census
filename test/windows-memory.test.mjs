@@ -54,7 +54,7 @@ test('planted faults in a report are each caught', () => {
   assert.deepEqual(ok.errors, []);
   assert.equal(ok.row.in_use_mb, '8424'); // 32424 - 24000
   assert.equal(ok.row.cached_mb, '9400'); // 300 + 100 + 9000
-  caught({ in_use_mb: '5000' }, /the report says 5000 and its values give 8424/);
+  caught({ in_use_mb: '5000' }, /the report says "5000" and its values give 8424/);
   caught({ available_mb: '40000' }, /in_use_mb: -7576 is below 0/);
   caught({ standby_mb: '2000' }, /standby and free do not add to available/);
   caught({ visible_mb: '40000', available_mb: '31576' }, /more than the memory installed/);

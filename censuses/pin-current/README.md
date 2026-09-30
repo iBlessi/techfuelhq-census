@@ -2,7 +2,7 @@
 
 How evenly the six 12 V pins of a 16-pin graphics card connector share the current, read from hardware that measures each pin.
 
-One row is one connector on one card, read once under one load. A row counts toward a published distribution when its total current is 6 A or more. Rows are grouped by cable type, and a group publishes once it holds five counted rows.
+One row is one connector on one card, read once under one load. A row counts toward a published distribution when its total current is 6 A or more and it is an ordinary reading. The minute a guard tool saved as it stepped in is kept as a row and left out of the distribution. Rows are grouped by cable type, and a group publishes once it holds five counted rows.
 
 - The page, with what has published and the tool that builds a report: https://techfuelhq.com/data/pin-current-census/
 - The data: [`data/submissions.csv`](data/submissions.csv)
@@ -22,7 +22,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 | `card_model` | yes | you | up to 80 characters | Card model. The model line: ROG Astral RTX 5080 OC. |
 | `gpu` | yes | you | up to 24 characters, matches `^(RTX\|RX\|Arc) [0-9A-Za-z ]{3,18}$` | GPU. The chip, written like RTX 5080 or RX 9070 XT. |
 | `sensor` | yes | you | `asus-power-detector`, `astral-hwmon`, `12vhpwr-guard`, `hwinfo`, `wireview-pro-ii`, `other` | What measured it |
-| `capture` | yes | the reading | `log`, `single-reading` | Capture |
+| `capture` | yes | the reading | `log`, `single-reading`, `guard-event` | Capture |
 | `cable_type` | yes | you | `native-16pin`, `native-8pin-psu-side`, `boxed-adapter`, `third-party` | Cable. What carries power from the supply to the card. |
 | `inline_part` | yes | you | `none`, `angled-adapter`, `extension`, `inline-meter` | Anything between cable and card |
 | `psu_brand` | yes | you | up to 40 characters | Power supply brand |
@@ -69,6 +69,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 |---|---|
 | `log` | A log over time |
 | `single-reading` | Six numbers read once |
+| `guard-event` | The minute 12VHPWR Guard saved as it stepped in |
 
 ### `cable_type`
 

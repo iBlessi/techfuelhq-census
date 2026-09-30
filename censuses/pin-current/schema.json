@@ -46,7 +46,8 @@
       "type": "string",
       "enum": [
         "log",
-        "single-reading"
+        "single-reading",
+        "guard-event"
       ],
       "x-source": "machine"
     },

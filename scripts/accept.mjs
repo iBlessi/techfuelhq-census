@@ -21,9 +21,19 @@ const table = readRows(id);
 const have = new Set(table.records.map((r) => r.source_issue));
 let refused = 0;
 
+const taken = [];
+
 for (const file of files) {
-  const issue = JSON.parse(readFileSync(file, 'utf8'));
-  const result = readIssue(issue, todayUtc());
+  let issue;
+  let result;
+  try {
+    issue = JSON.parse(readFileSync(file, 'utf8'));
+    result = readIssue(issue, todayUtc());
+  } catch (e) {
+    refused += 1;
+    console.error(`REFUSED ${file}: it could not be read as an issue`);
+    continue;
+  }
   if (!result.ok) {
     refused += 1;
     console.error(`REFUSED #${issue.number}: ${result.errors.join('; ')}`);
@@ -41,7 +51,7 @@ for (const file of files) {
   }
   table.records.push(result.row);
   have.add(String(issue.number));
-  console.log(`added #${issue.number}`);
+  taken.push(issue.number);
 }
 
 table.records.sort((a, b) => Number(a.source_issue || 0) - Number(b.source_issue || 0));
@@ -52,5 +62,7 @@ if (errors.length) {
   process.exit(1);
 }
 writeText(csvPath(id), serializeTable(table.header, table.records));
+// Said only now, when the rows are on disk.
+for (const n of taken) console.log(`added #${n}`);
 console.log(`${id}: ${table.records.length} row${table.records.length === 1 ? '' : 's'} on disk`);
 process.exit(refused ? 1 : 0);
