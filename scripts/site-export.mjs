@@ -150,10 +150,10 @@ if (existsSync(check)) {
     if (done.error) continue;
     ran = true;
     if (done.status !== 0) {
-      console.error('The site's census check failed against this export. Nothing more to do here until it passes.');
+      console.error("The site's census check failed against this export. Nothing more to do here until it passes.");
       process.exit(done.status || 1);
     }
     break;
   }
-  if (!ran) console.error('No python found, so the site's census check was not run. Run it there: python ops/scripts/checks/census_pages_check.py --source ' + ROOT);
+  if (!ran) console.error("No python found, so the site's census check was not run. Run it there: python ops/scripts/checks/census_pages_check.py --source " + ROOT);
 }
