@@ -79,13 +79,8 @@ for (const rel of FIXTURES) {
   files[`test/fixtures/${rel}`] = createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
-writeFileSync(
-  join(vendor, 'VENDOR.json'),
-  `${JSON.stringify({ repo: REPO, commit, dirty: Boolean(dirty), files }, null, 2)}\n`,
-  'utf8',
-);
-
 const dataDir = join(site, 'data', 'census');
+rmSync(dataDir, { recursive: true, force: true });
 mkdirSync(dataDir, { recursive: true });
 for (const id of IDS) {
   const def = CENSUSES[id];
@@ -123,7 +118,18 @@ for (const id of IDS) {
     })),
     summary: summarize(def, records),
   };
-  writeFileSync(join(dataDir, `${id}.json`), `${JSON.stringify(out, null, 2)}\n`, 'utf8');
+  const text = `${JSON.stringify(out, null, 2)}\n`;
+  writeFileSync(join(dataDir, `${id}.json`), text, 'utf8');
+  // The data a page prints is held to a hash like the code, so a command or a count edited
+  // in the site's copy is seen.
+  files[`data/${id}.json`] = createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
-console.log(`exported ${Object.keys(files).length} files and ${IDS.length} data files from ${commit.slice(0, 8)}`);
+// Last, once every file it lists is written.
+writeFileSync(
+  join(vendor, 'VENDOR.json'),
+  `${JSON.stringify({ repo: REPO, commit, dirty: Boolean(dirty), files }, null, 2)}\n`,
+  'utf8',
+);
+
+console.log(`exported ${Object.keys(files).length} files, ${IDS.length} of them data files, from ${commit.slice(0, 8)}`);
