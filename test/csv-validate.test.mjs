@@ -4,6 +4,7 @@ import { parseCsv, parseTable, serializeRow, serializeTable } from '../lib/csv.j
 import { checkField, fixed, near, quoted, unknownNames } from '../lib/validate.js';
 import { median, summarize } from '../lib/stats.js';
 import { TODAY } from './helpers.mjs';
+import { latestToday } from '../scripts/common.mjs';
 
 test('csv: quoted commas, doubled quotes and line breaks survive a round trip', () => {
   const values = ['plain', 'has, comma', 'has "quote"', 'two\nlines', ''];
@@ -150,4 +151,11 @@ test('summary: four counted rows stay collecting, the fifth publishes, uncounted
   assert.deepEqual(s.groups[0].figures, { n: 5, median: '3.0' });
   assert.equal(s.groups[1].state, 'collecting');
   assert.equal(s.groups[1].figures, undefined);
+});
+
+test('a report is dated by the latest date anywhere on Earth, not by the date in UTC', () => {
+  // 23:00 UTC on the 30th is 08:00 on the 1st in Tokyo, where a purchase month of October is real.
+  assert.equal(latestToday(new Date('2026-09-30T23:00:00Z')), '2026-10-01');
+  assert.equal(latestToday(new Date('2026-09-30T09:59:00Z')), '2026-09-30');
+  assert.equal(latestToday(new Date('2026-09-30T10:00:00Z')), '2026-10-01');
 });

@@ -129,6 +129,11 @@ test('intake: both boxes have to be there and ticked, so deleting them is no way
   assert.deepEqual(r.errors, ['both boxes under "Before you send" have to be ticked']);
   assert.equal(readIssue({ ...at, body: BODY(good, ['x', ' ']) }, TODAY).ok, false);
   assert.equal(readIssue({ ...at, body: BODY(good).replace(/^- \[X\] I release.*$/m, '') }, TODAY).ok, false);
+  // The words of the boxes are the forms' words; two ticked boxes saying something else are not consent.
+  assert.equal(readIssue({ ...at, body: BODY(good).replace('I release this report under CC BY 4.0.', 'I release nothing.') }, TODAY).ok, false);
+  assert.equal(readIssue({ ...at, body: BODY(good).replace('- [X] This is my own hardware', '- [X] This is my own hardware!') }, TODAY).ok, false);
+  assert.deepEqual(confirmations(BODY(good)), { total: 2, ticked: 2 });
+  assert.deepEqual(confirmations(BODY(good, ['x', 'X'])), { total: 2, ticked: 2 });
 });
 
 // What GitHub would draw from a comment, were it read as markdown outside a code block.

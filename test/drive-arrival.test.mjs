@@ -254,6 +254,54 @@ test('a paste edited so that a serial number sits where the model belongs is ref
   assert.throws(() => readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, `Device Model:     Serial Number: ${SERIAL}`), ''), /a serial number would have ended up in the report/);
 });
 
+test('a family or model with "Serial ATA" in its name is a name, not a serial number', () => {
+  // Ten families in smartmontools' drivedb.h carry the words, "Western Digital Caviar Blue Serial ATA" among them.
+  const wd = WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:     WDC WD5000AAKS-00V1A0')
+    .replace(/^(=== START OF INFORMATION SECTION ===\n)/m, '$1Model Family:     Western Digital Caviar Blue Serial ATA\n');
+  const { machine } = readDrive(wd, '');
+  assert.equal(machine.model_family, 'Western Digital Caviar Blue Serial ATA');
+  assert.equal(machine.model, 'WDC WD5000AAKS-00V1A0');
+  assert.equal(machine.drive_vendor, 'wd');
+  // The words that mean a serial number was read as a model are still refused, even a short one.
+  assert.throws(() => readDrive(WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:     Serial Number: ZX9AB'), ''), /serial number would have ended up/);
+});
+
+test('a SAS drive prints its serial number long in one place and short in another, and is one drive', () => {
+  const sas = SAS_BLANK_VENDOR.replace('Serial number:        ZL2ABCDE0000', 'Serial number:        00000ZL2ABCDE0000RXB');
+  const farm = [
+    'Seagate Field Access Reliability Metrics log (FARM) (SCSI Log page 0x3d, sub-page 0x3)',
+    '\tFARM Log Parameter 1: Drive Information',
+    '\t\tSerial Number: ZL2ABCDE',
+    '\t\tPower on Hour: 31300',
+    '\t\tPower Cycle count: 62',
+    '',
+  ].join('\n');
+  // The long form starts with zeros, as multipath-tools issue 56 shows; the base is the middle of it.
+  const { machine } = readDrive(sas.replace('00000ZL2ABCDE0000RXB', 'ZL2ABCDE0000RXB'), farm);
+  assert.equal(machine.farm, 'read');
+  assert.equal(machine.farm_poh, '31300');
+  assert.ok(!/ZL2ABCDE/i.test(everyValue(machine)));
+  // Two different drives are still two.
+  assert.throws(() => readDrive(sas, farm.replace('ZL2ABCDE', 'ZL2ZZZZZ')), /more than one/);
+});
+
+test('a model that carries part of the serial number after it is refused', () => {
+  // Sun-branded drives print a date code and part of the serial after the model.
+  const sun = WITH_SERIAL.replace(/^Device Model:.*$/m, 'Device Model:     HITACHI HDS7250SASUN500G 0726K9ZW5H')
+    .replace(`Serial Number:    ${SERIAL}`, 'Serial Number:    K9ZW5HGN');
+  assert.throws(() => readDrive(sun, ''), /a serial number would have ended up in the report/);
+  // A model that shares a short run with the serial, as models and serials often do, is not.
+  const plain = WITH_SERIAL.replace(`Serial Number:    ${SERIAL}`, 'Serial Number:    3DJ1ABCD');
+  assert.equal(readDrive(plain, '').machine.model, 'ST20000NM007D-3DJ103');
+});
+
+test('thousands separators of every kind in the capacity line', () => {
+  for (const sep of [',', '.', "'", '\u2019', '\u00a0', '\u202f', ' ']) {
+    const text = EXOS20_A.replace(/^User Capacity:.*$/m, `User Capacity:    20${sep}000${sep}588${sep}851${sep}200 bytes [20.0 TB]`);
+    assert.equal(readSmart(text).smart.capacity_tb, '20.00', JSON.stringify(sep));
+  }
+});
+
 test('drive makers from model names, and from the maker part of a world wide name', () => {
   assert.equal(vendorOf('ST16000NM001G-2KK103', 'Seagate Exos X16'), 'seagate');
   assert.equal(vendorOf('OOS6000G', ''), 'seagate');
