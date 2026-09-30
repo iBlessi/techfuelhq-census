@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseCsv, parseTable, serializeRow, serializeTable } from '../lib/csv.js';
-import { checkField, fixed, near } from '../lib/validate.js';
+import { checkField, fixed, near, quoted, unknownNames } from '../lib/validate.js';
 import { median, summarize } from '../lib/stats.js';
 import { TODAY } from './helpers.mjs';
 
@@ -60,6 +60,55 @@ test('fields: each type refuses what it should', () => {
   bad({ type: 'month' }, '2026-13', /not a month/);
   bad({ type: 'month' }, '2026-10', /future/);
   good({ type: 'month' }, '2026-09');
+});
+
+test('fields: text a spreadsheet would run as a formula is refused', () => {
+  const text = { name: 'seller', type: 'string', maxLength: 60 };
+  for (const value of ['=HYPERLINK("https://e.example","A1")', "=cmd|' /C calc'!A0", '+1+1', '-2+3', '@SUM(A1:A2)']) {
+    const errors = checkField(text, value, TODAY);
+    assert.equal(errors.length, 1, value);
+    assert.match(errors[0], /a spreadsheet reads as a formula/, value);
+  }
+  // The same characters are harmless anywhere but the start, and a negative number is a number.
+  assert.deepEqual(checkField(text, 'A+ Drives = good', TODAY), []);
+  assert.deepEqual(checkField(text, 'user@example', TODAY), []);
+  assert.deepEqual(checkField({ name: 'gap', type: 'integer', min: -10 }, '-5', TODAY), []);
+});
+
+test('fields: a character that does not print is refused, whatever the type', () => {
+  const NUL = String.fromCharCode(0);
+  const hidden = {
+    'a null': `a${NUL}b`,
+    'an escape': `a${String.fromCharCode(27)}[31mb`,
+    'a delete': `a${String.fromCharCode(127)}b`,
+    'a C1 control': `a${String.fromCharCode(0x85)}b`,
+    'a line separator': `a${String.fromCharCode(0x2028)}b`,
+    'a paragraph separator': `a${String.fromCharCode(0x2029)}b`,
+    'a right-to-left override': `a${String.fromCharCode(0x202e)}b`,
+    'an isolate': `a${String.fromCharCode(0x2066)}b`,
+    'a byte order mark': `a${String.fromCharCode(0xfeff)}b`,
+  };
+  for (const [what, value] of Object.entries(hidden)) {
+    for (const field of [{ type: 'string' }, { type: 'enum', values: ['ab'] }]) {
+      const errors = checkField({ name: 'x', ...field }, value, TODAY);
+      assert.equal(errors.length, 1, what);
+      assert.match(errors[0], /does not print/, what);
+    }
+  }
+  assert.deepEqual(checkField({ name: 'x', type: 'string' }, 'ヨドバシ Ситилинк café', TODAY), []);
+});
+
+test('messages quote what a report said on one line, short, with nothing hidden in it', () => {
+  assert.equal(quoted('plain'), '"plain"');
+  assert.equal(quoted('two\n\n## lines'), '"two ## lines"');
+  assert.equal(quoted(`a${String.fromCharCode(0)}${String.fromCharCode(0x202e)}b`), '"a b"');
+  assert.equal(quoted('x'.repeat(200)).length, 65);
+  assert.equal(quoted(12), '"12"');
+  assert.equal(quoted(undefined), '"undefined"');
+  const def = { id: 'demo', fields: [{ name: 'a' }] };
+  assert.deepEqual(unknownNames(def, ['a']), []);
+  assert.deepEqual(unknownNames(def, ['a', 'b\nc']), ['"b c" is not a field of the demo census']);
+  assert.equal(unknownNames(def, ['1', '2', '3', '4', '5', '6', '7']).length, 1);
 });
 
 test('numbers: fixed() prints the same digits every time, and never minus zero', () => {

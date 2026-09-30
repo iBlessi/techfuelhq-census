@@ -47,7 +47,7 @@ const definition = {
   page: 'https://techfuelhq.com/data/windows-memory-census/',
   unit: 'one machine, read once',
   about: 'How much memory Windows holds on a machine that has just started and is doing nothing, by the amount of memory installed.',
-  counted: 'A row counts when the machine was restarted, signed in to, and left alone for 5 to 60 minutes. Rows are grouped by installed memory, and a group publishes once it holds five counted rows.',
+  counted: 'A row counts when the machine was restarted, signed in to straight away and left alone, and the reading was taken 5 to 60 minutes after the restart. Rows are grouped by installed memory, and a group publishes once it holds five counted rows.',
   title: (row) => `[windows-memory] ${row.installed_gb} GB installed, ${row.in_use_mb} MB in use`,
   fields: [
     { name: 'installed_gb', type: 'integer', required: true, min: 2, max: 2048, from: 'machine', label: 'Memory installed (GB)' },
@@ -65,15 +65,15 @@ const definition = {
     mb('nonpaged_pool_mb', 'Non-paged pool (MB)'),
     { name: 'processes', type: 'integer', required: true, min: 1, max: 100000, from: 'machine', label: 'Processes running' },
     { name: 'startup_items', type: 'integer', min: 0, max: 10000, from: 'machine', label: 'Startup entries' },
-    { name: 'uptime_min', type: 'integer', required: true, min: 0, max: 5256000, from: 'machine', label: 'Minutes since boot' },
+    { name: 'uptime_min', type: 'integer', required: true, min: 0, max: 5256000, from: 'machine', label: 'Minutes since Windows started', help: 'Counted from the start of Windows, not from signing in.' },
     { name: 'os_caption', type: 'string', required: true, maxLength: 80, from: 'machine', label: 'Windows edition' },
     { name: 'os_build', type: 'string', required: true, maxLength: 20, pattern: '^[0-9]{4,6}$', from: 'machine', label: 'Windows build' },
     {
       name: 'state', type: 'enum', required: true, from: 'human', label: 'What the machine was doing',
       values: ['fresh-boot-idle', 'in-use'],
       labels: {
-        'fresh-boot-idle': `Restarted, signed in, then left alone with nothing opened for ${IDLE_UPTIME_MIN} to ${IDLE_UPTIME_MAX} minutes`,
-        'in-use': 'In use, or up for longer than that',
+        'fresh-boot-idle': `Restarted, signed in straight away, left alone with nothing opened, and read ${IDLE_UPTIME_MIN} to ${IDLE_UPTIME_MAX} minutes after the restart`,
+        'in-use': 'In use, or read at any other time',
       },
     },
     { name: 'notes', type: 'string', maxLength: 280, from: 'human', label: 'Notes' },

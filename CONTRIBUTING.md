@@ -31,10 +31,13 @@ page's change log says so. Rows are never edited silently.
 
 ## Privacy
 
-The census pages work in your browser and send nothing to TechFuelHQ. A report carries hardware
-models and readings. It carries no serial number, world wide name, host name or user name, and
-the drive page removes serial numbers from smartctl output before it shows the output back to
-you. Your GitHub account name is public on the issue you open, as on any issue.
+The census pages read what you paste inside your browser. None of it is sent to TechFuelHQ or
+to anyone else; the report goes to GitHub when you open the issue yourself. A report carries
+hardware models and readings. It carries no serial number, world wide name, host name or user
+name: the drive page reads past them, and refuses a paste in which one would end up in the
+report. The pages count visits the way the rest of techfuelhq.com does, and nothing you paste
+or type is part of that count. Your GitHub account name is public on the issue you open, as on
+any issue.
 
 ## Changes to the code or a schema
 

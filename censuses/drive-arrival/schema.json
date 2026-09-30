@@ -165,8 +165,9 @@
       "maximum": 10000000,
       "x-source": "machine"
     },
-    "farm_assembly_yyww": {
-      "title": "Assembly date as FARM prints it",
+    "farm_assembly_printed": {
+      "title": "Assembly date, as smartctl printed it",
+      "description": "Four digits, kept as printed. smartctl labels them year and week. On the two Seagate drives in the test data each pair arrives with its digits swapped, so 2264 reads as week 46 of 2022.",
       "type": "string",
       "pattern": "^[0-9]{4}$",
       "x-source": "machine"

@@ -112,7 +112,8 @@
       "x-source": "machine"
     },
     "uptime_min": {
-      "title": "Minutes since boot",
+      "title": "Minutes since Windows started",
+      "description": "Counted from the start of Windows, not from signing in.",
       "type": "integer",
       "minimum": 0,
       "maximum": 5256000,

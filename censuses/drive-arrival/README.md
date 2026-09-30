@@ -39,7 +39,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 | `farm_spindle_poh` | no | the reading | 0 to 200000, whole number | Spindle power-on hours, FARM |
 | `farm_head_flight_hours` | no | the reading | 0 to 200000, whole number | Head flight hours, FARM |
 | `farm_power_cycles` | no | the reading | 0 to 10000000, whole number | Power cycles, FARM |
-| `farm_assembly_yyww` | no | the reading | matches `^[0-9]{4}$` | Assembly date as FARM prints it |
+| `farm_assembly_printed` | no | the reading | matches `^[0-9]{4}$` | Assembly date, as smartctl printed it. Four digits, kept as printed. smartctl labels them year and week. On the two Seagate drives in the test data each pair arrives with its digits swapped, so 2264 reads as week 46 of 2022. |
 | `poh_gap_h` | no | worked out from the row | -200000 to 200000, whole number | FARM hours minus SMART hours |
 | `arrived` | yes | you | `working`, `dead`, `errors-on-first-test` | How it arrived |
 | `first_test` | yes | you | `none`, `short-smart`, `long-smart`, `full-surface` | Test run before use |
@@ -82,7 +82,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 |---|---|
 | `read` | Read |
 | `not-supported` | The drive does not keep one |
-| `not-provided` | Not pasted |
+| `not-provided` | Not read |
 
 ### `arrived`
 

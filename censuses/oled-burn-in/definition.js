@@ -10,6 +10,14 @@ export const SEVERITY = {
   4: 'Replaced, returned or retired because of it',
 };
 
+// Whole months from one YYYY-MM to another, or null if either is not written that way.
+export function monthsBetween(from, to) {
+  const a = /^(\d{4})-(\d{2})$/.exec(String(from || ''));
+  const b = /^(\d{4})-(\d{2})$/.exec(String(to || ''));
+  if (!a || !b) return null;
+  return (Number(b[1]) - Number(a[1])) * 12 + (Number(b[2]) - Number(a[2]));
+}
+
 const definition = {
   id: 'oled-burn-in',
   name: 'TechFuelHQ OLED Monitor Burn-In Census',
@@ -77,6 +85,12 @@ const definition = {
     }
     if ((row.panel_hours || '') !== '' && (row.hours_source || '') === '') errors.push('panel_hours needs hours_source');
     if ((row.panel_hours || '') === '' && (row.hours_source || '') !== '') errors.push('hours_source is set and panel_hours is empty');
+    // A monitor cannot have been in use for longer than it has been owned. One month of slack,
+    // because both ends are whole months.
+    const owned = monthsBetween(row.purchase_month, String(row.submitted_date || '').slice(0, 7));
+    if (owned !== null && Number(row.months_in_use) > owned + 1) {
+      errors.push(`months_in_use: ${row.months_in_use} is longer than the monitor has been owned, going by the month it was bought`);
+    }
     return errors;
   },
 

@@ -72,6 +72,14 @@ real output: a published capture from a ROG Astral card, smartctl output from Se
 Digital, SAS, solid state and NVMe drives, and what the two Windows commands printed on a
 Ryzen 7 7800X3D desktop. Where that output comes from is in [test/fixtures/README.md](test/fixtures/README.md).
 
+## Labels
+
+The issue forms and the workflow that reads a report depend on the labels in
+[.github/labels.json](.github/labels.json). GitHub adds a form's label only if the label
+exists, and the workflow reads only an issue labelled `report`, so a copy of this repository
+without them opens reports and never reads one. `node scripts/labels.mjs` lists what is
+missing, and `node scripts/labels.mjs --apply` creates it.
+
 ## The two commands
 
 The POST time and Windows memory pages each give one PowerShell line to paste. Both read the

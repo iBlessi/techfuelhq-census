@@ -2,7 +2,8 @@ name: read-report
 
 # Reads a report when its issue is opened or edited, and answers on the issue with the row it
 # makes or with what has to be fixed. The issue's text is read from the event file as data; no
-# step places it in a command line.
+# step places it in a command line. Each action is pinned to a commit, so that a moved tag
+# cannot change what runs with this repository's token.
 on:
   issues:
     types: [opened, edited, reopened]
@@ -20,8 +21,10 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'report') && github.event.issue.state == 'open'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
       - name: Read the report

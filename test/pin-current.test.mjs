@@ -54,6 +54,10 @@ test('a row marked read_error is left out and counted as skipped', () => {
 test('12VHPWR Guard flight file, in the layout its writer produces', () => {
   assert.equal(detectFormat(FLIGHT), '12vhpwr-guard');
   const r = readLog(FLIGHT);
+  // The guard writes this file only as it steps in, so it is kept apart from ordinary logs.
+  assert.equal(r.machine.capture, 'guard-event');
+  assert.equal(r.event, true);
+  assert.equal(readLog(BURN).machine.capture, 'log');
   assert.equal(r.all, 120);
   assert.equal(r.machine.samples, '34'); // the samples at 25 A and above
   assert.equal(r.machine.duration_s, '60'); // 119 half-second steps is 59.5 s
@@ -93,6 +97,60 @@ test('a single reading: six numbers, a decimal comma accepted, anything else ref
   assert.throws(() => fromSingleReading([1, 2, 3, 4, 5, 'x']), /0 to 30/);
 });
 
+test('an empty box is a missing reading, never a pin that carries nothing', () => {
+  // Number('') is 0: this reading was once accepted with pin 3 at 0.00 A.
+  assert.throws(() => fromSingleReading(['8.1', '8.4', '', '8.0', '8.6', '8.2']), /Each of the six boxes needs a number/);
+  assert.throws(() => fromSingleReading(['8.1', '8.4', '   ', '8.0', '8.6', '8.2']), /Each of the six boxes needs a number/);
+  assert.throws(() => fromSingleReading(['8.1', '8.4', null, '8.0', '8.6', '8.2']), /Each of the six boxes needs a number/);
+  assert.equal(fromSingleReading(['8.1', '8.4', '0', '8.0', '8.6', '8.2']).machine.pin3_a, '0.00');
+});
+
+test('a log row with an empty pin or time cell is skipped, and the means are taken from the rest', () => {
+  const whole = readLog(BURN);
+  const lines = BURN.split('\n');
+  const header = lines[0].split(',');
+  const at = header.indexOf('ma3');
+  let emptied = 0;
+  const holed = lines.map((l, n) => {
+    if (n === 0 || n % 2 === 1 || l.trim() === '') return l;
+    const cells = l.split(',');
+    cells[at] = '';
+    emptied += 1;
+    return cells.join(',');
+  });
+  const r = readLog(holed.join('\n'));
+  assert.equal(r.skipped, emptied);
+  assert.equal(r.all, 322 - emptied);
+  // Pin 3 keeps a mean near the whole log's, where an empty cell read as zero would halve it.
+  assert.ok(Math.abs(Number(r.machine.pin3_a) - Number(whole.machine.pin3_a)) < 0.2, `${r.machine.pin3_a} against ${whole.machine.pin3_a}`);
+  const noTime = lines.map((l, n) => (n === 3 ? l.replace(/^([^,]*,[^,]*,)[^,]*/, '$1') : l));
+  assert.equal(parseLog(noTime.join('\n')).skipped, 1);
+});
+
+test('a six-hour log at two readings a second is read', () => {
+  const rows = ['time,pin1,pin2,pin3,pin4,pin5,pin6'];
+  const start = Date.UTC(2026, 8, 20, 10, 0, 0);
+  for (let k = 0; k < 43200; k += 1) {
+    const stamp = new Date(start + k * 500).toISOString().replace('T', ' ').replace('Z', '');
+    rows.push(`${stamp},7.10,7.20,7.30,7.00,${k === 40000 ? '9.40' : '7.60'},7.20`);
+  }
+  const r = readLog(rows.join('\n'));
+  assert.equal(r.all, 43200);
+  assert.equal(r.machine.duration_s, '21600');
+  assert.equal(r.machine.peak_pin_a, '9.40');
+});
+
+test('the minute a guard saved as it stepped in is kept as a row and left out of the distribution', () => {
+  const machine = readLog(FLIGHT).machine;
+  const human = { ...report('pin-current').fields };
+  for (const key of Object.keys(machine)) delete human[key];
+  const built = buildRow(def, { census: 'pin-current', v: 1, fields: { ...human, ...machine, sensor: '12vhpwr-guard' } }, { submitted_date: TODAY }, TODAY);
+  assert.deepEqual(built.errors, []);
+  assert.equal(built.row.band, 'high');
+  assert.equal(def.publish.counts(built.row), false);
+  assert.equal(def.publish.counts({ ...built.row, capture: 'log' }), true);
+});
+
 test('text that is not a log says what is read and what to do instead', () => {
   assert.equal(detectFormat('Date,Time,CPU [C]\n'), null);
   assert.throws(() => parseLog('hello'), /astral-hwmon session files and 12VHPWR Guard flight files/);
@@ -118,8 +176,8 @@ test('planted faults in a report are each caught', () => {
   caught({ gpu: '5090' }, /does not match/);
   caught({ capture: 'single-reading' }, /single reading has samples 1/);
   caught({ months_in_use: undefined }, /months_in_use: required/);
-  caught({ imbalance: '1.000' }, /the report says 1\.000 and its values give 1\.064/);
-  caught({ band: 'idle' }, /the report says idle/);
+  caught({ imbalance: '1.000' }, /the report says "1\.000" and its values give 1\.064/);
+  caught({ band: 'idle' }, /the report says "idle"/);
   caught({ submitted_date: '2026-01-01' }, /set by the maintainer/);
-  caught({ favourite_colour: 'blue' }, /not a field/);
+  caught({ favourite_colour: 'blue' }, /"favourite_colour" is not a field/);
 });

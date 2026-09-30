@@ -2,7 +2,7 @@
 
 How much memory Windows holds on a machine that has just started and is doing nothing, by the amount of memory installed.
 
-One row is one machine, read once. A row counts when the machine was restarted, signed in to, and left alone for 5 to 60 minutes. Rows are grouped by installed memory, and a group publishes once it holds five counted rows.
+One row is one machine, read once. A row counts when the machine was restarted, signed in to straight away and left alone, and the reading was taken 5 to 60 minutes after the restart. Rows are grouped by installed memory, and a group publishes once it holds five counted rows.
 
 - The page, with what has published and the tool that builds a report: https://techfuelhq.com/data/windows-memory-census/
 - The data: [`data/submissions.csv`](data/submissions.csv)
@@ -33,7 +33,7 @@ In the CSV every value is text, and an empty cell means the field was left out.
 | `nonpaged_pool_mb` | yes | the reading | 0 to 4194304, whole number | Non-paged pool (MB) |
 | `processes` | yes | the reading | 1 to 100000, whole number | Processes running |
 | `startup_items` | no | the reading | 0 to 10000, whole number | Startup entries |
-| `uptime_min` | yes | the reading | 0 to 5256000, whole number | Minutes since boot |
+| `uptime_min` | yes | the reading | 0 to 5256000, whole number | Minutes since Windows started. Counted from the start of Windows, not from signing in. |
 | `os_caption` | yes | the reading | up to 80 characters | Windows edition |
 | `os_build` | yes | the reading | up to 20 characters, matches `^[0-9]{4,6}$` | Windows build |
 | `state` | yes | you | `fresh-boot-idle`, `in-use` | What the machine was doing |
@@ -47,5 +47,5 @@ In the CSV every value is text, and an empty cell means the field was left out.
 
 | Value | Meaning |
 |---|---|
-| `fresh-boot-idle` | Restarted, signed in, then left alone with nothing opened for 5 to 60 minutes |
-| `in-use` | In use, or up for longer than that |
+| `fresh-boot-idle` | Restarted, signed in straight away, left alone with nothing opened, and read 5 to 60 minutes after the restart |
+| `in-use` | In use, or read at any other time |

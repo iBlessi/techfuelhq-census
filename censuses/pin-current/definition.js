@@ -35,7 +35,7 @@ const definition = {
   page: 'https://techfuelhq.com/data/pin-current-census/',
   unit: 'one connector on one card, read once under one load',
   about: 'How evenly the six 12 V pins of a 16-pin graphics card connector share the current, read from hardware that measures each pin.',
-  counted: 'A row counts toward a published distribution when its total current is 6 A or more. Rows are grouped by cable type, and a group publishes once it holds five counted rows.',
+  counted: 'A row counts toward a published distribution when its total current is 6 A or more and it is an ordinary reading. The minute a guard tool saved as it stepped in is kept as a row and left out of the distribution. Rows are grouped by cable type, and a group publishes once it holds five counted rows.',
   title: (row) => `[pin-current] ${row.card_model}, busiest pin ${Math.max(...[1, 2, 3, 4, 5, 6].map((p) => Number(row[`pin${p}_a`]))).toFixed(2)} A of ${row.total_a} A`,
   fields: [
     { name: 'card_brand', type: 'string', required: true, maxLength: 40, from: 'human', label: 'Card brand', help: 'As printed on the box: ASUS, MSI, Gigabyte.' },
@@ -53,7 +53,11 @@ const definition = {
         other: 'Something else (say what in the notes)',
       },
     },
-    { name: 'capture', type: 'enum', required: true, from: 'machine', label: 'Capture', values: ['log', 'single-reading'], labels: { log: 'A log over time', 'single-reading': 'Six numbers read once' } },
+    {
+      name: 'capture', type: 'enum', required: true, from: 'machine', label: 'Capture',
+      values: ['log', 'single-reading', 'guard-event'],
+      labels: { log: 'A log over time', 'single-reading': 'Six numbers read once', 'guard-event': 'The minute 12VHPWR Guard saved as it stepped in' },
+    },
     {
       name: 'cable_type', type: 'enum', required: true, from: 'human', label: 'Cable',
       help: 'What carries power from the supply to the card.',
@@ -128,7 +132,7 @@ const definition = {
     },
     group: (row) => row.cable_type,
     label: (key) => definition.fields.find((f) => f.name === 'cable_type').labels[key] || key,
-    counts: (row) => row.band !== 'idle',
+    counts: (row) => row.band !== 'idle' && row.capture !== 'guard-event',
     figures(rows) {
       const imbalance = rows.map((r) => Number(r.imbalance));
       const peaks = rows.map((r) => Number(r.peak_pin_a));
