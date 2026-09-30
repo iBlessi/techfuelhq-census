@@ -1,1 +1,2 @@
 os,platform,cpu,board_vendor,board,bios_version,bios_date,dimms,ram_gb,ram_speed,memory_fast_boot,boot_kind,fast_startup,fw_post_ms,os_build,notes,submitted_date,source_issue
+windows,am5,AMD Ryzen 7 7800X3D 8-Core Processor,ASUSTeK COMPUTER INC.,ROG STRIX B650-A GAMING WIFI,3881,2026-06-17,1,32,6000,unknown,cold-boot,off,63981,26200,"Filed by the maintainer from the owner's desktop. The System log shows a power off at 01:47 and a start at 09:17 with Kernel-Boot event 27 boot type 0x0, a full boot. Memory Context Restore not checked.",2026-09-30,3
