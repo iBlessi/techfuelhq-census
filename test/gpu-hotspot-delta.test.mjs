@@ -53,8 +53,8 @@ test('GPU hotspot: RTX 50 version floors are enforced and unverified tools stay 
   assert.match(errors({ tool: 'hwmonitor', tool_version: 'current' }), /needs version 1\.65\.1 or later/);
   assert.deepEqual(made({ tool: 'hwmonitor', tool_version: '1.65.1' }).errors, []);
   assert.deepEqual(made({ tool: 'hwmonitor', tool_version: 'v1.66' }).errors, []);
-  assert.match(errors({ tool: 'lact', tool_version: '0.10.0' }), /needs version 0\.10\.1 or later/);
-  assert.deepEqual(made({ tool: 'lact', tool_version: '0.10.1' }).errors, []);
+  assert.match(errors({ tool: 'lact', tool_version: '0.9.1' }), /needs version 0\.10\.0 or later/);
+  assert.deepEqual(made({ tool: 'lact', tool_version: '0.10.0' }).errors, []);
   assert.equal(row({ tool: 'gpu-z', tool_version: '2.68.0' }).blackwell_tool_unverified, 'yes');
   assert.deepEqual(made({ gpu_family: 'rtx-40', tool: 'hwmonitor', tool_version: '1.64' }).errors, []);
 
@@ -81,7 +81,7 @@ test('GPU hotspot: an exact model publishes only after five qualifying rows in t
     card_brand: k < 3 ? 'ASUS' : 'Asus',
     card_model: k === 4 ? 'ROG-Astral RTX 5080 OC' : 'ROG Astral RTX 5080 OC',
     core_temp_c: '70', hotspot_temp_c: String(70 + delta),
-    ...(k === 4 ? { tool: 'lact', tool_version: '0.10.1' } : {}),
+    ...(k === 4 ? { tool: 'lact', tool_version: '0.10.0' } : {}),
   }, k + 1));
   const extra = [
     row({ cooler_state: 'repasted' }, 10),
@@ -111,7 +111,7 @@ test('GPU hotspot: family rollup publishes at twenty rows with interpolated Q1, 
     card_model: `Model ${delta}`,
     core_temp_c: '70',
     hotspot_temp_c: String(70 + delta),
-    ...(delta % 2 ? { tool: 'lact', tool_version: '0.10.1' } : {}),
+    ...(delta % 2 ? { tool: 'lact', tool_version: '0.10.0' } : {}),
   }, delta + 1));
   const nineteen = summarize(hotspot, rows.slice(0, 19)).rollups[0];
   assert.equal(nineteen.floor, 20);

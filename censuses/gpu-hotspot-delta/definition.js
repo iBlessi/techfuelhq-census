@@ -60,8 +60,10 @@ const MOUNT_LABELS = {
 const FAN_LABELS = { auto: 'Automatic fan control', custom: 'Custom fan control' };
 
 const BLACKWELL_FLOORS = {
+  // Sources: https://www.cpuid.com/softwares/hwmonitor.html and
+  // https://github.com/ilya-zlobintsev/LACT/releases/tag/v0.10.0 (merged path: PR #1122).
   hwmonitor: [1, 65, 1],
-  lact: [0, 10, 1],
+  lact: [0, 10, 0],
 };
 
 export function versionParts(value) {
