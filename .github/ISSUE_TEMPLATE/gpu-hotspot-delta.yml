@@ -1,0 +1,35 @@
+name: GPU hotspot delta report
+description: "One software sensor reading from one GPU under one sustained load."
+title: "[gpu-hotspot-delta] "
+labels: ["report", "census:gpu-hotspot-delta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Build the report on the census page: https://techfuelhq.com/data/gpu-hotspot-delta-census/
+
+        Record the core and hotspot readings from the same sustained-load session. The report must name the software sensor tool and its version. PCB, backplate, infrared-camera and thermocouple readings do not belong in this census.
+  - type: textarea
+    id: report
+    attributes:
+      label: Report
+      description: The block the census page wrote. Paste it as it is.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: sensor-panel
+    attributes:
+      label: Sensor-panel screenshot (optional)
+      description: Drag in a screenshot if you want the maintainer to compare the typed core, hotspot, tool and version values. Remove names or other private details first.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before you send
+      options:
+        - label: This is my own hardware, and I took this reading myself.
+          required: true
+        - label: I release this report under CC BY 4.0.
+          required: true

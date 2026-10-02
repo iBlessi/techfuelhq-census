@@ -11,8 +11,8 @@ import { ROOT, file } from './helpers.mjs';
 
 const lf = (s) => s.replace(/\r\n/g, '\n');
 
-test('there are five censuses and each has every file it needs', () => {
-  assert.deepEqual(IDS, ['pin-current', 'oled-burn-in', 'post-time', 'drive-arrival', 'windows-memory']);
+test('there are six censuses and each has every file it needs', () => {
+  assert.deepEqual(IDS, ['pin-current', 'oled-burn-in', 'post-time', 'drive-arrival', 'windows-memory', 'gpu-hotspot-delta']);
   for (const id of IDS) {
     for (const name of ['definition.js', 'schema.json', 'summary.json', 'README.md', 'data/submissions.csv']) {
       assert.ok(existsSync(join(ROOT, 'censuses', id, name)), `${id}/${name}`);
@@ -37,6 +37,13 @@ test('each definition is complete and its field names are unique', () => {
     }
     assert.match(def.page, /^https:\/\/techfuelhq\.com\/data\/[a-z-]+-census\/$/);
     assert.equal(def.publish.floor, 5);
+    const rollups = def.publish.rollups || [];
+    assert.equal(new Set(rollups.map((r) => r.id)).size, rollups.length, `${def.id} repeats a rollup id`);
+    for (const rollup of rollups) {
+      assert.match(rollup.id, /^[a-z0-9-]+$/, `${def.id} rollup id`);
+      assert.ok(rollup.labelForView, `${def.id}.${rollup.id} has no label`);
+      assert.ok(Number.isInteger(rollup.floor) && rollup.floor > 0, `${def.id}.${rollup.id} has no floor`);
+    }
     assert.equal(typeof def.title({}), 'string');
     assert.ok(def.about.length > 40 && def.counted.length > 40);
   }
@@ -317,9 +324,13 @@ test('every figure a census can publish has a label for the page', async () => {
   for (const def of Object.values(CENSUSES)) {
     const made = buildRow(def, { census: def.id, v: 1, fields: GOOD[def.id] }, { submitted_date: '2026-09-29' }, '2026-09-29');
     assert.deepEqual(made.errors, [], def.id);
-    // Six copies of a good row: enough for every conditional figure to appear.
-    const figures = def.publish.figures(Array.from({ length: 6 }, () => ({ ...made.row, panel_hours: '5000', hours_source: 'osd' })));
-    for (const key of Object.keys(figures)) assert.ok(def.publish.figureLabels[key], `${def.id}: no label for ${key}`);
-    for (const key of Object.keys(def.publish.figureLabels)) assert.ok(key in figures, `${def.id}: label for ${key}, which is never published`);
+    // Six copies of a good row: enough for every conditional primary figure to appear. Rollup
+    // figure functions receive the same valid rows directly; their floor controls publication.
+    const rows = Array.from({ length: 6 }, () => ({ ...made.row, panel_hours: '5000', hours_source: 'osd' }));
+    for (const view of [def.publish, ...(def.publish.rollups || [])]) {
+      const figures = view.figures(rows);
+      for (const key of Object.keys(figures)) assert.ok(view.figureLabels[key], `${def.id}: no label for ${key}`);
+      for (const key of Object.keys(view.figureLabels)) assert.ok(key in figures, `${def.id}: label for ${key}, which is never published`);
+    }
   }
 });

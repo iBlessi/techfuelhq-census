@@ -1,0 +1,18 @@
+{
+  "census": "gpu-hotspot-delta",
+  "version": "0.1.0",
+  "floor": 5,
+  "reports": 0,
+  "counted": 0,
+  "groups": [],
+  "rollups": [
+    {
+      "id": "gpu-family",
+      "label": "GPU family",
+      "floor": 20,
+      "reports": 0,
+      "counted": 0,
+      "groups": []
+    }
+  ]
+}

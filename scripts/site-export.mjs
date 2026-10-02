@@ -1,5 +1,5 @@
 // Copies what the TechFuelHQ site needs from this repository into a checkout of the site:
-//   assets/js/census/vendor/   the library and the five definitions, byte for byte
+//   assets/js/census/vendor/   the library and every definition, byte for byte
 //   assets/js/census/vendor/VENDOR.json   the commit they came from and a hash of each file
 //   data/census/<id>.json      the fields, commands and summary each page prints
 //   tests/census/fixtures/     the real output the site's browser tests paste in
@@ -88,6 +88,11 @@ for (const id of IDS) {
   const def = CENSUSES[id];
   const module = await import(`../censuses/${id}/definition.js`);
   const { records } = readRows(id);
+  const rollups = (def.publish.rollups || []).map((view) => ({
+    id: view.id,
+    label: view.labelForView,
+    figures: Object.entries(view.figureLabels).map(([key, label]) => ({ key, label })),
+  }));
   const out = {
     id: def.id,
     name: def.name,
@@ -99,6 +104,7 @@ for (const id of IDS) {
     floor: def.publish.floor,
     // An ordered list, because a template that walks a map sorts its keys.
     figures: Object.entries(def.publish.figureLabels).map(([key, label]) => ({ key, label })),
+    ...(rollups.length ? { rollups } : {}),
     repo: REPO,
     commit,
     csv: `https://raw.githubusercontent.com/${REPO}/main/censuses/${id}/data/submissions.csv`,

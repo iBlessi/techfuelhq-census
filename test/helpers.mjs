@@ -43,6 +43,13 @@ export const GOOD = {
     paged_pool_mb: '600', nonpaged_pool_mb: '500', processes: '180', startup_items: '5',
     uptime_min: '12', os_caption: 'Microsoft Windows 11 Home', os_build: '26200', state: 'fresh-boot-idle',
   },
+  'gpu-hotspot-delta': {
+    card_brand: 'ASUS', card_model: 'ROG Astral RTX 5080 OC', gpu_family: 'rtx-50',
+    core_temp_c: '70', hotspot_temp_c: '86', reading_type: 'both-max-same-session',
+    load_type: 'game-sustained', load_minutes: '15', tool: 'hwmonitor', tool_version: '1.65.1',
+    cooler_state: 'original-factory', months_since_paste: '4', power_state: 'stock',
+    mount: 'horizontal', ambient_c: '23', power_draw_w: '360', fan_mode: 'auto',
+  },
 };
 
 export const report = (id, changes = {}) => {

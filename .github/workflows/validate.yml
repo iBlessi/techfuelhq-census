@@ -20,7 +20,7 @@ jobs:
           node-version: 22
       - name: Prove the checks catch what they claim to
         run: npm test
-      - name: Validate the five datasets
+      - name: Validate every dataset
         run: npm run validate
       - name: Schemas, summaries and field tables match the definitions and the data
         run: |
