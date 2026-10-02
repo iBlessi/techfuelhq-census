@@ -1,0 +1,1 @@
+card_brand,card_model,exact_sku,gpu_family,core_temp_c,hotspot_temp_c,delta_c,reading_type,load_type,load_minutes,tool,tool_version,blackwell_tool_unverified,cooler_state,months_since_paste,power_state,mount,ambient_c,power_draw_w,fan_mode,notes,submitted_date,source_issue

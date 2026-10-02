@@ -1,6 +1,6 @@
 # TechFuelHQ open census
 
-Five open datasets about things PC owners argue over and nobody has counted. Each one is a census:
+Six open datasets about things PC owners argue over and nobody has counted. Each one is a census:
 one row is one card, monitor, machine or drive that its owner read or judged. The pages publish
 distributions with the number of reports beside them. They never publish a verdict on a model, a
 brand or a seller.
@@ -12,8 +12,10 @@ brand or a seller.
 | [POST time](censuses/post-time/) | one boot of one machine | https://techfuelhq.com/data/post-time-census/ |
 | [Drive arrival](censuses/drive-arrival/) | one drive as it arrived | https://techfuelhq.com/data/drive-arrival-census/ |
 | [Windows idle memory](censuses/windows-memory/) | one machine, read once | https://techfuelhq.com/data/windows-memory-census/ |
+| [GPU hotspot delta](censuses/gpu-hotspot-delta/) | one software sensor reading from one card under one sustained load | https://techfuelhq.com/data/gpu-hotspot-delta-census/ |
 
-All five opened on 2026-09-29 with zero rows. Nothing was seeded from reviews or forum posts.
+The first five opened on 2026-09-29 with zero rows. The GPU hotspot delta census starts with zero
+rows. Nothing was seeded from reviews, forum posts or test fixtures.
 
 ## Send a report
 
@@ -39,10 +41,11 @@ fields, and the issue forms take the same object:
 
 ## What publishes
 
-Every census groups its rows and publishes a group's figures once the group holds five counted
-rows. Below that a group is listed as collecting, with its count and no figures. Each census
-folder says how it groups and what counts. `summary.json` in each folder holds the counts and
-the published figures, and is rebuilt from the CSV.
+Every census has a primary grouping that publishes a group's figures once it holds five counted
+rows. A census may also declare a named rollup with its own floor. Below a floor a group is listed
+as collecting, with its count and no figures. Each census folder says how it groups and what
+counts. `summary.json` in each folder holds the counts and published figures, and is rebuilt from
+the CSV.
 
 Reports are sent by people who chose to send them. The figures describe the rows in the dataset
 and do not estimate what any one card, monitor, machine or drive will do.

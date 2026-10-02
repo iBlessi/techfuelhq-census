@@ -5,6 +5,7 @@
   { "name": "census:post-time", "color": "5319e7", "description": "A report for the POST time census" },
   { "name": "census:drive-arrival", "color": "5319e7", "description": "A report for the drive arrival census" },
   { "name": "census:windows-memory", "color": "5319e7", "description": "A report for the Windows idle memory census" },
+  { "name": "census:gpu-hotspot-delta", "color": "5319e7", "description": "A report for the GPU hotspot delta census" },
   { "name": "reads-cleanly", "color": "0e8a16", "description": "The workflow read the report and it makes a valid row" },
   { "name": "needs-a-fix", "color": "d93f0b", "description": "The workflow found something in the report to fix" },
   { "name": "recorded", "color": "006b75", "description": "The report is a row in the dataset" },

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseCsv, parseTable, serializeRow, serializeTable } from '../lib/csv.js';
 import { checkField, fixed, near, quoted, unknownNames } from '../lib/validate.js';
-import { median, summarize } from '../lib/stats.js';
+import { median, quantile, summarize } from '../lib/stats.js';
 import { TODAY } from './helpers.mjs';
 import { latestToday } from '../scripts/common.mjs';
 
@@ -127,6 +127,17 @@ test('stats: median of odd, even and empty lists', () => {
   assert.equal(median([]), null);
 });
 
+test('stats: quantiles use deterministic linear interpolation', () => {
+  assert.equal(quantile([], 0.25), null);
+  assert.equal(quantile([10], 0.25), 10);
+  assert.equal(quantile([0, 10], 0.25), 2.5);
+  assert.equal(quantile([19, 0, 10, 5], 0.25), 3.75);
+  assert.equal(quantile(Array.from({ length: 20 }, (_, k) => k), 0.25), 4.75);
+  assert.equal(quantile(Array.from({ length: 20 }, (_, k) => k), 0.75), 14.25);
+  assert.throws(() => quantile([1], -0.01), /between 0 and 1/);
+  assert.throws(() => quantile([1], 1.01), /between 0 and 1/);
+});
+
 test('summary: four counted rows stay collecting, the fifth publishes, uncounted rows never count', () => {
   const def = {
     id: 'demo',
@@ -151,6 +162,30 @@ test('summary: four counted rows stay collecting, the fifth publishes, uncounted
   assert.deepEqual(s.groups[0].figures, { n: 5, median: '3.0' });
   assert.equal(s.groups[1].state, 'collecting');
   assert.equal(s.groups[1].figures, undefined);
+});
+
+test('summary: optional rollups have their own grouping and floor without changing the primary shape', () => {
+  const base = {
+    id: 'demo', version: '0.0.0',
+    publish: {
+      floor: 2, group: (r) => r.model, label: (k) => k, counts: (r) => r.ok,
+      figures: (rows) => ({ n: rows.length }),
+    },
+  };
+  const rows = [{ model: 'a', family: 'f', ok: true }, { model: 'a', family: 'f', ok: true }];
+  assert.deepEqual(Object.keys(summarize(base, rows)), ['census', 'version', 'floor', 'reports', 'counted', 'groups']);
+
+  base.publish.rollups = [{
+    id: 'family', labelForView: 'Family', floor: 3,
+    group: (r) => r.family, label: (k) => `family ${k}`, counts: (r) => r.ok,
+    figures: (counted) => ({ n: counted.length }),
+  }];
+  const summary = summarize(base, rows);
+  assert.equal(summary.groups[0].state, 'published');
+  assert.deepEqual(summary.rollups, [{
+    id: 'family', label: 'Family', floor: 3, reports: 2, counted: 2,
+    groups: [{ key: 'f', label: 'family f', reports: 2, counted: 2, state: 'collecting' }],
+  }]);
 });
 
 test('a report is dated by the latest date anywhere on Earth, not by the date in UTC', () => {

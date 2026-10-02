@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/iBlessi/techfuelhq-census/main/censuses/gpu-hotspot-delta/schema.json",
+  "title": "TechFuelHQ GPU Hotspot Delta Census",
+  "description": "One row is one software sensor reading from one card under one sustained load. In the CSV every value is text and an empty cell means the field was left out. Dataset version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "card_brand": {
+      "title": "Card brand",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "human"
+    },
+    "card_model": {
+      "title": "Card model",
+      "type": "string",
+      "maxLength": 80,
+      "x-source": "human"
+    },
+    "exact_sku": {
+      "title": "Exact SKU",
+      "description": "The full SKU from the card label, if it is handy.",
+      "type": "string",
+      "maxLength": 100,
+      "x-source": "human"
+    },
+    "gpu_family": {
+      "title": "GPU family",
+      "type": "string",
+      "enum": [
+        "rtx-50",
+        "rtx-40",
+        "rtx-30",
+        "rx-9000",
+        "rx-7000",
+        "rx-6000",
+        "arc",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "core_temp_c": {
+      "title": "GPU core temperature (C)",
+      "type": "integer",
+      "minimum": 20,
+      "maximum": 100,
+      "x-source": "human"
+    },
+    "hotspot_temp_c": {
+      "title": "GPU hotspot temperature (C)",
+      "type": "integer",
+      "minimum": 20,
+      "maximum": 125,
+      "x-source": "human"
+    },
+    "delta_c": {
+      "title": "Hotspot minus core (C)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 105,
+      "x-source": "derived"
+    },
+    "reading_type": {
+      "title": "How the two temperatures were read",
+      "type": "string",
+      "enum": [
+        "both-max-same-session",
+        "simultaneous-snapshot"
+      ],
+      "x-source": "human"
+    },
+    "load_type": {
+      "title": "Load",
+      "type": "string",
+      "enum": [
+        "game-sustained",
+        "furmark",
+        "3dmark-stress-test",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "load_minutes": {
+      "title": "Minutes under load",
+      "type": "integer",
+      "minimum": 10,
+      "x-source": "human"
+    },
+    "tool": {
+      "title": "Sensor tool",
+      "type": "string",
+      "enum": [
+        "hwinfo64",
+        "hwmonitor",
+        "gpu-z",
+        "msi-afterburner",
+        "lact",
+        "amd-software",
+        "other"
+      ],
+      "x-source": "human"
+    },
+    "tool_version": {
+      "title": "Sensor tool version",
+      "type": "string",
+      "maxLength": 40,
+      "x-source": "human"
+    },
+    "blackwell_tool_unverified": {
+      "title": "RTX 50 tool verification flag",
+      "type": "string",
+      "enum": [
+        "no",
+        "yes"
+      ],
+      "x-source": "derived"
+    },
+    "cooler_state": {
+      "title": "Cooler and thermal material",
+      "type": "string",
+      "enum": [
+        "original-factory",
+        "repasted",
+        "repasted-and-repadded",
+        "aftermarket-air",
+        "waterblock"
+      ],
+      "x-source": "human"
+    },
+    "months_since_paste": {
+      "title": "Months since the thermal paste was applied",
+      "description": "Use the age of the card if it has its factory paste.",
+      "type": "integer",
+      "minimum": 0,
+      "x-source": "human"
+    },
+    "power_state": {
+      "title": "Power state",
+      "type": "string",
+      "enum": [
+        "stock",
+        "undervolted",
+        "power-limit-raised",
+        "overclocked"
+      ],
+      "x-source": "human"
+    },
+    "mount": {
+      "title": "Card mount",
+      "type": "string",
+      "enum": [
+        "horizontal",
+        "vertical",
+        "open-bench"
+      ],
+      "x-source": "human"
+    },
+    "ambient_c": {
+      "title": "Room temperature (C)",
+      "type": "integer",
+      "x-source": "human"
+    },
+    "power_draw_w": {
+      "title": "GPU power draw (W)",
+      "type": "integer",
+      "minimum": 0,
+      "x-source": "human"
+    },
+    "fan_mode": {
+      "title": "Fan control",
+      "type": "string",
+      "enum": [
+        "auto",
+        "custom"
+      ],
+      "x-source": "human"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string",
+      "maxLength": 280,
+      "x-source": "human"
+    },
+    "submitted_date": {
+      "title": "The day the report was sent",
+      "type": "string",
+      "format": "date",
+      "x-source": "intake"
+    },
+    "source_issue": {
+      "title": "The issue the row came from",
+      "type": "integer",
+      "minimum": 1,
+      "x-source": "intake"
+    }
+  },
+  "required": [
+    "card_brand",
+    "card_model",
+    "gpu_family",
+    "core_temp_c",
+    "hotspot_temp_c",
+    "reading_type",
+    "load_type",
+    "load_minutes",
+    "tool",
+    "tool_version",
+    "cooler_state",
+    "months_since_paste",
+    "power_state",
+    "submitted_date"
+  ]
+}
