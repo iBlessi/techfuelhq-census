@@ -2,7 +2,15 @@
   "census": "oled-burn-in",
   "version": "0.1.0",
   "floor": 5,
-  "reports": 0,
-  "counted": 0,
-  "groups": []
+  "reports": 1,
+  "counted": 1,
+  "groups": [
+    {
+      "key": "woled",
+      "label": "WOLED",
+      "reports": 1,
+      "counted": 1,
+      "state": "collecting"
+    }
+  ]
 }

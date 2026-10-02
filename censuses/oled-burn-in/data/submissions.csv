@@ -1,1 +1,2 @@
 monitor_brand,monitor_model,panel_type,size_in,purchase_month,months_in_use,panel_hours,hours_source,use_mix,brightness,care_cycles,static_mitigation,severity,location,warranty_claim,notes,submitted_date,source_issue
+Gigabyte,AORUS FO48U,woled,48,2023-08,37,,,mixed,high,as-prompted,,0,none,none,"Filed by the maintainer for the owner. Purchase month from the Micro Center receipt of 2023-08-11. Daily driver for games and work through the built-in KVM; the OSD runs HDR Vivid at Brightness 100 (review, 2026-06-11). Panel care runs on its own.",2026-10-02,4
